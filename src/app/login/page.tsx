@@ -74,6 +74,8 @@ export default function LoginPage() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                aria-required="true"
+                aria-invalid={error ? "true" : "false"}
               />
             </div>
             <div>
@@ -90,6 +92,8 @@ export default function LoginPage() {
                 placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                aria-required="true"
+                aria-invalid={error ? "true" : "false"}
               />
             </div>
           </div>

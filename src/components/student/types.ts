@@ -69,3 +69,10 @@ export interface FinancialRecord {
   status: 'paid' | 'pending' | 'overdue' | 'future';
   receiptUrl: string | null;
 }
+
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  modules: Module[];
+}
