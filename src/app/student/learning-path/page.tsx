@@ -37,7 +37,7 @@ export default function LearningPathPage() {
   if (loading) {
     return (
       <div className="container mx-auto">
-        <div className="animate-pulse space-y-6">
+        <div className="animate-pulse space-y-6" data-testid="loading-skeleton">
           <div className="h-8 bg-gray-200 rounded w-1/4"></div>
           <div className="h-12 bg-gray-200 rounded"></div>
           <div className="space-y-3">
@@ -68,6 +68,16 @@ export default function LearningPathPage() {
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
               }`}
               onClick={() => handleTabChange(path.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleTabChange(path.id);
+                }
+              }}
+              role="tab"
+              aria-selected={activePath === path.id}
+              aria-controls={`panel-${path.id}`}
+              tabIndex={activePath === path.id ? 0 : -1}
             >
               {path.title}
             </button>
