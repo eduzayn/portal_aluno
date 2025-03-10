@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { BarChart2, BookOpen, Award, Bell, MessageSquare } from 'lucide-react'
-import { getStudentProfile, getStudentCourses } from '../../../components/student/mock-data'
+import { getStudentProfile, getStudentCourses } from '../../../components/student/supabase-data'
+import { supabase } from '../../../lib/supabase'
 import { Student, Course } from '../../../components/student/types'
 import { CourseCard } from '../../../components/student/course-card'
 
@@ -16,6 +17,14 @@ export default function StudentDashboardPage() {
   useEffect(() => {
     async function loadData() {
       try {
+        // Check if user is authenticated
+        const { data: authData } = await supabase.auth.getSession()
+        
+        if (!authData.session) {
+          // For development, we'll continue without redirecting
+          console.log('No authenticated session, using mock data')
+        }
+        
         const studentData = await getStudentProfile()
         const coursesData = await getStudentCourses()
         setStudent(studentData)
@@ -28,7 +37,7 @@ export default function StudentDashboardPage() {
     }
 
     loadData()
-  }, [])
+  }, [router])
 
   const handleContinueCourse = (courseId: string) => {
     router.push(`/student/courses/${courseId}`)
