@@ -5,6 +5,10 @@ export interface Student {
   avatar?: string;
   enrollmentDate: string;
   certificates: Certificate[];
+  enrolledCourses?: number;
+  completedCourses?: number;
+  certificatesEarned?: number;
+  currentProgress?: number;
 }
 
 export interface Course {
@@ -17,6 +21,10 @@ export interface Course {
   progress: number;
   status: 'not_started' | 'in_progress' | 'completed';
   modules: Module[];
+  imageUrl?: string;
+  duration?: string;
+  totalModules?: number;
+  totalLessons?: number;
 }
 
 export interface Module {
@@ -26,6 +34,8 @@ export interface Module {
   duration: string;
   status: 'locked' | 'available' | 'in_progress' | 'completed';
   lessons: Lesson[];
+  courseId?: string;
+  order?: number;
 }
 
 export interface Lesson {
@@ -35,6 +45,8 @@ export interface Lesson {
   duration: string;
   type: 'video' | 'reading' | 'quiz' | 'assignment';
   status: 'locked' | 'available' | 'in_progress' | 'completed';
+  order?: number;
+  completed?: boolean;
 }
 
 export interface Certificate {
@@ -45,4 +57,15 @@ export interface Certificate {
   issueDate: string;
   expiryDate?: string;
   downloadUrl: string;
+  certificateUrl?: string;
+}
+
+export interface FinancialRecord {
+  id: string;
+  description: string;
+  amount: number;
+  dueDate: Date;
+  paymentDate: Date | null;
+  status: 'paid' | 'pending' | 'overdue' | 'future';
+  receiptUrl: string | null;
 }
