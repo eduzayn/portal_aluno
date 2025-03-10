@@ -4,18 +4,19 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Circle, CheckCircle, Clock, BookOpen, ArrowRight } from 'lucide-react'
 import { getLearningPaths } from '../../../components/student/mock-data'
+import { LearningPath, Module, Lesson } from '../../../components/student/types'
 
 export default function LearningPathPage() {
-  const [learningPaths, setLearningPaths] = useState([])
-  const [activePath, setActivePath] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [learningPaths, setLearningPaths] = useState<LearningPath[]>([])
+  const [activePath, setActivePath] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(true)
   const router = useRouter()
 
   useEffect(() => {
     async function loadData() {
       try {
         const pathsData = await getLearningPaths()
-        setLearningPaths(pathsData)
+        setLearningPaths(pathsData as LearningPath[])
         if (pathsData.length > 0) {
           setActivePath(pathsData[0].id)
         }
@@ -29,7 +30,7 @@ export default function LearningPathPage() {
     loadData()
   }, [])
 
-  const handleTabChange = (pathId) => {
+  const handleTabChange = (pathId: string): void => {
     setActivePath(pathId)
   }
 
@@ -49,7 +50,7 @@ export default function LearningPathPage() {
     )
   }
 
-  const currentPath = learningPaths.find(path => path.id === activePath) || {}
+  const currentPath = learningPaths.find(path => path.id === activePath) || {} as Partial<LearningPath>
 
   return (
     <div className="container mx-auto">
@@ -58,7 +59,7 @@ export default function LearningPathPage() {
       {/* Tabs */}
       <div className="mb-6 border-b border-gray-200">
         <div className="flex space-x-4">
-          {learningPaths.map((path) => (
+          {learningPaths.map((path: LearningPath) => (
             <button
               key={path.id}
               className={`py-2 px-4 font-medium text-sm border-b-2 transition-colors ${
@@ -82,7 +83,7 @@ export default function LearningPathPage() {
       
       {/* Modules */}
       <div className="space-y-6">
-        {currentPath.modules?.map((module, index) => (
+        {currentPath.modules?.map((module: Module, index: number) => (
           <div 
             key={module.id} 
             className={`border rounded-lg overflow-hidden ${
@@ -137,7 +138,7 @@ export default function LearningPathPage() {
             <div className="bg-gray-50 p-4 border-t border-gray-100">
               <h4 className="text-sm font-medium mb-3">Lições</h4>
               <div className="space-y-3">
-                {module.lessons.map((lesson) => (
+                {module.lessons.map((lesson: Lesson) => (
                   <div 
                     key={lesson.id} 
                     className={`flex items-center gap-3 p-2 rounded-lg ${
