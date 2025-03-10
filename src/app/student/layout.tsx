@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Bell } from 'lucide-react'
-import { studentNavItems } from '../../../components/student/routes'
+import { studentNavItems } from '../../components/student/routes'
 
 interface StudentLayoutProps {
   children: React.ReactNode
@@ -33,7 +33,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
           </Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">
-          {studentNavItems.map((item) => (
+          {studentNavItems.map((item: { path: string; name: string; icon: any }) => (
             <Link
               key={item.path}
               href={item.path}
@@ -42,8 +42,9 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                   ? 'bg-primary/10 text-primary font-medium'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
+              aria-current={pathname === item.path ? 'page' : undefined}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-5 w-5" aria-hidden="true" />
               <span>{item.name}</span>
             </Link>
           ))}
@@ -67,8 +68,11 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
           <button
             className="md:hidden mr-4"
             onClick={toggleSidebar}
+            aria-label="Toggle navigation menu"
+            aria-expanded={isSidebarOpen}
+            aria-controls="mobile-menu"
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
           <h1 className="text-xl font-bold md:hidden">
             Edun<span className="text-primary">éxia</span>
@@ -104,7 +108,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
               </button>
             </div>
             <nav className="p-4 space-y-1">
-              {studentNavItems.map((item) => (
+              {studentNavItems.map((item: { path: string; name: string; icon: any }) => (
                 <Link
                   key={item.path}
                   href={item.path}
@@ -114,8 +118,9 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                   onClick={toggleSidebar}
+                  aria-current={pathname === item.path ? 'page' : undefined}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className="h-5 w-5" aria-hidden="true" />
                   <span>{item.name}</span>
                 </Link>
               ))}
