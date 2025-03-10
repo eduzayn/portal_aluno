@@ -2,17 +2,20 @@ import { supabase } from '../../lib/supabase'
 import { Student, Course, Module, Lesson, Certificate, FinancialRecord } from './types'
 import { getStudentProfile as getMockStudentProfile, getStudentCourses as getMockStudentCourses } from './mock-data'
 
-// Fetch student profile
-export async function getStudentProfile(studentId: string = 'student-1'): Promise<Student | null> {
+/**
+ * Fetch student profile from Supabase
+ * Falls back to mock data if Supabase fetch fails
+ */
+export async function getStudentProfile(studentId: string = 'student-1'): Promise<Student> {
   try {
     const { data, error } = await supabase
       .from('students')
-      .select('*')
+      .select('*, certificates(*)')
       .eq('id', studentId)
       .single()
     
     if (error) throw error
-    return data
+    return data as Student
   } catch (error) {
     console.error('Error fetching student profile:', error)
     // Fallback to mock data
@@ -20,44 +23,64 @@ export async function getStudentProfile(studentId: string = 'student-1'): Promis
   }
 }
 
-// Fetch student courses
+/**
+ * Fetch student courses from Supabase
+ * Falls back to mock data if Supabase fetch fails
+ */
 export async function getStudentCourses(studentId: string = 'student-1'): Promise<Course[]> {
   try {
     const { data, error } = await supabase
       .from('enrollments')
       .select(`
-        course_id,
-        courses:course_id (
-          id,
-          title,
-          description,
-          image_url,
-          instructor,
-          start_date,
-          end_date,
-          total_modules,
-          total_lessons
-        )
+        courses:course_id(
+          id, 
+          title, 
+          description, 
+          imageUrl, 
+          duration, 
+          totalModules, 
+          totalLessons,
+          modules:modules(
+            id, 
+            title, 
+            description, 
+            duration, 
+            status,
+            order,
+            lessons:lessons(
+              id, 
+              title, 
+              description, 
+              duration, 
+              type, 
+              status,
+              order,
+              completed
+            )
+          )
+        ),
+        progress,
+        status
       `)
       .eq('student_id', studentId)
     
     if (error) throw error
     
-    // Transform the data to match our Course type
-    return data.map((enrollment: any) => ({
+    // Transform the data to match the Course type
+    const courses = data.map((enrollment: any) => ({
       id: enrollment.courses.id,
       title: enrollment.courses.title,
       description: enrollment.courses.description,
-      imageUrl: enrollment.courses.image_url,
-      instructor: enrollment.courses.instructor,
-      startDate: enrollment.courses.start_date,
-      endDate: enrollment.courses.end_date,
-      progress: 0, // We'll need to calculate this separately
-      status: 'in_progress', // Default status
-      modules: [], // Will be populated separately if needed
-      totalModules: enrollment.courses.total_modules,
-      totalLessons: enrollment.courses.total_lessons
+      imageUrl: enrollment.courses.imageUrl,
+      duration: enrollment.courses.duration,
+      totalModules: enrollment.courses.totalModules,
+      totalLessons: enrollment.courses.totalLessons,
+      progress: enrollment.progress,
+      status: enrollment.status,
+      modules: enrollment.courses.modules
     }))
+    
+    return courses as Course[]
   } catch (error) {
     console.error('Error fetching student courses:', error)
     // Fallback to mock data
@@ -65,7 +88,10 @@ export async function getStudentCourses(studentId: string = 'student-1'): Promis
   }
 }
 
-// Fetch course progress
+/**
+ * Fetch course progress from Supabase
+ * Falls back to random progress if Supabase fetch fails
+ */
 export async function getCourseProgress(studentId: string, courseId: string): Promise<number> {
   try {
     const { data: completedLessons, error: completedError } = await supabase
@@ -92,7 +118,10 @@ export async function getCourseProgress(studentId: string, courseId: string): Pr
   }
 }
 
-// Fetch learning path
+/**
+ * Fetch learning path from Supabase
+ * Falls back to empty array if Supabase fetch fails
+ */
 export async function getLearningPath(studentId: string): Promise<Module[]> {
   try {
     const { data: enrollments, error: enrollmentError } = await supabase
@@ -158,8 +187,11 @@ export async function getLearningPath(studentId: string): Promise<Module[]> {
   }
 }
 
-// Fetch certificates
-export async function getStudentCertificates(studentId: string): Promise<Certificate[]> {
+/**
+ * Fetch student certificates from Supabase
+ * Falls back to mock data if Supabase fetch fails
+ */
+export async function getStudentCertificates(studentId: string = 'student-1'): Promise<Certificate[]> {
   try {
     const { data, error } = await supabase
       .from('certificates')
@@ -189,12 +221,16 @@ export async function getStudentCertificates(studentId: string): Promise<Certifi
     }))
   } catch (error) {
     console.error('Error fetching certificates:', error)
-    // Return empty array for now - would implement mock data fallback in production
-    return []
+    // Fallback to mock data
+    const student = await getMockStudentProfile()
+    return student.certificates
   }
 }
 
-// Fetch financial records
+/**
+ * Fetch financial records from Supabase
+ * Falls back to empty array if Supabase fetch fails
+ */
 export async function getFinancialRecords(studentId: string): Promise<FinancialRecord[]> {
   try {
     const { data, error } = await supabase
@@ -222,7 +258,53 @@ export async function getFinancialRecords(studentId: string): Promise<FinancialR
   }
 }
 
-// Helper function to use Supabase or fall back to mock data
+/**
+ * Update course progress in Supabase
+ */
+export async function updateCourseProgress(
+  studentId: string,
+  courseId: string,
+  progress: number,
+  status: 'not_started' | 'in_progress' | 'completed'
+): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('enrollments')
+      .update({ progress, status })
+      .eq('student_id', studentId)
+      .eq('course_id', courseId)
+    
+    if (error) throw error
+  } catch (error) {
+    console.error('Error updating course progress:', error)
+    throw error
+  }
+}
+
+/**
+ * Update lesson status in Supabase
+ */
+export async function updateLessonStatus(
+  lessonId: string,
+  status: 'locked' | 'available' | 'in_progress' | 'completed',
+  completed: boolean = false
+): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('lessons')
+      .update({ status, completed })
+      .eq('id', lessonId)
+    
+    if (error) throw error
+  } catch (error) {
+    console.error('Error updating lesson status:', error)
+    throw error
+  }
+}
+
+/**
+ * Helper function to use Supabase or fall back to mock data
+ */
 export async function useSupabaseOrMock<T>(
   supabaseFunction: () => Promise<T>,
   mockFunction: () => Promise<T>
