@@ -23,6 +23,8 @@ export interface StudentRoutes {
   help: string;
   financial: string;
   learningPath: string;
+  credential: string;
+  documents: string;
 }
 
 export const studentRoutes: StudentRoutes = {
@@ -39,6 +41,8 @@ export const studentRoutes: StudentRoutes = {
   help: '/student/help',
   financial: '/student/financial',
   learningPath: '/student/learning-path',
+  credential: '/student/credential',
+  documents: '/student/documents',
 };
 
 export const studentNavItems: RouteItem[] = [
@@ -61,6 +65,16 @@ export const studentNavItems: RouteItem[] = [
     path: studentRoutes.materials,
     name: 'Material Didático',
     icon: BookMarked,
+  },
+  {
+    path: studentRoutes.credential,
+    name: 'Credencial',
+    icon: User,
+  },
+  {
+    path: studentRoutes.documents,
+    name: 'Documentos',
+    icon: FileCheck,
   },
   {
     path: studentRoutes.certificates,
