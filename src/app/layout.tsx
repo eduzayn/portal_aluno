@@ -1,6 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { AuthProvider } from '../contexts/AuthContext'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Portal do Aluno - Edunéxia',
@@ -12,13 +12,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <html lang="pt-BR">
-      <body>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-      </body>
-    </html>
-  )
+  // Redirect to the default locale (pt-BR)
+  redirect('/pt-BR');
+  
+  // This part won't be reached due to the redirect
+  return null;
 }
