@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --primary: 215 100% 50%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 240 5.9% 10%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 262 83.3% 57.8%;
-  --accent-foreground: 0 0% 100%;
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 215 100% 50%;
+  --primary: 210 100% 50%;        /* Blue */
+  --primary-foreground: 0 0% 100%; /* White */
+  --secondary: 330 100% 60%;       /* Pink */
+  --secondary-foreground: 0 0% 100%; /* White */
+  --accent: 330 80% 50%;           /* Darker Pink */
+  --accent-foreground: 0 0% 100%;  /* White */
+  --background: 0 0% 100%;         /* White */
+  --foreground: 0 0% 0%;           /* Black */
+  --muted: 210 40% 96%;            /* Light Blue */
+  --muted-foreground: 0 0% 40%;    /* Dark Gray */
+  --border: 0 0% 90%;              /* Light Gray */
+  --input: 0 0% 90%;               /* Light Gray */
+  --ring: 210 100% 50%;            /* Blue */
 }
 
 @layer base {
@@ -26,14 +26,31 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md bg-gradient-to-r from-primary to-secondary px-4 py-2 text-sm font-medium text-white shadow-md transition-all hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
   
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-sm transition-all hover:border-primary hover:text-primary hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
   
   .btn-ghost {
-    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-muted hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  /* New gradient utility classes */
+  .gradient-blue-pink {
+    @apply bg-gradient-to-r from-primary to-secondary;
+  }
+  
+  .gradient-pink-blue {
+    @apply bg-gradient-to-r from-secondary to-primary;
+  }
+  
+  .gradient-blue-dark {
+    @apply bg-gradient-to-r from-primary to-primary/70;
+  }
+  
+  .gradient-card-hover {
+    @apply transition-all duration-300 bg-white hover:bg-gradient-to-b hover:from-white hover:to-muted;
   }
 }
