@@ -25,8 +25,8 @@ export function CourseCard({ course, onContinue }: CourseCardProps) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden transition-all hover:shadow-md bg-white">
-      <div className="h-3 bg-primary w-full"></div>
+    <div className="border border-gray-200 rounded-xl overflow-hidden transition-all hover:shadow-lg gradient-card-hover">
+      <div className="h-3 gradient-blue-pink w-full"></div>
       <div className="p-6">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-bold">{course.title}</h3>
@@ -38,7 +38,7 @@ export function CourseCard({ course, onContinue }: CourseCardProps) {
           <p className="text-sm text-gray-600">Progresso: {course.progress}%</p>
           <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
             <div 
-              className="bg-primary h-2.5 rounded-full" 
+              className="gradient-blue-pink h-2.5 rounded-full" 
               style={{ width: `${course.progress}%` }}
             ></div>
           </div>

@@ -52,34 +52,34 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-foreground">Dashboard</h1>
       
       {/* Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
           <div className="flex items-center gap-2 mb-2">
             <BookOpen className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">Cursos</h2>
+            <h2 className="text-lg font-semibold text-foreground">Cursos</h2>
           </div>
-          <p className="text-3xl font-bold">{courses.length}</p>
+          <p className="text-3xl font-bold text-foreground">{courses.length}</p>
           <p className="text-sm text-gray-600">Cursos matriculados</p>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
           <div className="flex items-center gap-2 mb-2">
             <Award className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">Certificados</h2>
+            <h2 className="text-lg font-semibold text-foreground">Certificados</h2>
           </div>
-          <p className="text-3xl font-bold">{student?.certificates.length || 0}</p>
+          <p className="text-3xl font-bold text-foreground">{student?.certificates.length || 0}</p>
           <p className="text-sm text-gray-600">Certificados obtidos</p>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
           <div className="flex items-center gap-2 mb-2">
             <Bell className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">Notificações</h2>
+            <h2 className="text-lg font-semibold text-foreground">Notificações</h2>
           </div>
-          <p className="text-3xl font-bold">3</p>
+          <p className="text-3xl font-bold text-foreground">3</p>
           <p className="text-sm text-gray-600">Novas notificações</p>
         </div>
       </div>
@@ -125,11 +125,11 @@ export default function StudentDashboardPage() {
       {/* Atividades recentes */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2>
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
           <div className="space-y-4">
             <div className="flex items-start gap-4 pb-4 border-b">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <BookOpen className="h-5 w-5 text-primary" />
+              <div className="gradient-blue-pink p-2 rounded-full">
+                <BookOpen className="h-5 w-5 text-white" />
               </div>
               <div>
                 <p className="font-medium">Aula concluída</p>
@@ -139,8 +139,8 @@ export default function StudentDashboardPage() {
             </div>
             
             <div className="flex items-start gap-4 pb-4 border-b">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <Award className="h-5 w-5 text-primary" />
+              <div className="gradient-blue-pink p-2 rounded-full">
+                <Award className="h-5 w-5 text-white" />
               </div>
               <div>
                 <p className="font-medium">Nota atribuída</p>
@@ -150,8 +150,8 @@ export default function StudentDashboardPage() {
             </div>
             
             <div className="flex items-start gap-4">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <MessageSquare className="h-5 w-5 text-primary" />
+              <div className="gradient-blue-pink p-2 rounded-full">
+                <MessageSquare className="h-5 w-5 text-white" />
               </div>
               <div>
                 <p className="font-medium">Nova mensagem</p>
