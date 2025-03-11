@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Bell } from 'lucide-react'
-import { studentNavItems } from '../../../components/student/routes'
+import { studentNavItems } from '../../components/student/routes'
 
 interface StudentLayoutProps {
   children: React.ReactNode

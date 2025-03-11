@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --primary: 215 100% 50%;
+  --primary: 238 100% 67%; /* Indigo */
   --primary-foreground: 0 0% 100%;
-  --secondary: 240 5.9% 10%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 262 83.3% 57.8%;
+  --secondary: 262 83% 58%; /* Purple */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 199 89% 48%; /* Blue */
   --accent-foreground: 0 0% 100%;
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 215 100% 50%;
+  --background: 210 40% 98%; /* Slate-50 */
+  --foreground: 222 47% 11%; /* Gray-900 */
+  --muted: 210 40% 96%; /* Slate-100 */
+  --muted-foreground: 215 16% 47%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 238 100% 67%;
 }
 
 @layer base {
@@ -35,5 +35,42 @@
   
   .btn-ghost {
     @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  /* New gradient utility classes */
+  .sidebar-item {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .sidebar-item:hover {
+    @apply bg-gradient-to-r from-indigo-50 to-transparent;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-gradient-to-r from-indigo-100 to-transparent border-r-4 border-indigo-600 text-indigo-700;
+  }
+  
+  .status-card {
+    @apply rounded-xl p-4 transition-all duration-200;
+  }
+  
+  .status-card-red {
+    @apply bg-red-50;
+  }
+  
+  .status-card-blue {
+    @apply bg-blue-50;
+  }
+  
+  .status-card-green {
+    @apply bg-green-50;
+  }
+  
+  .status-card-purple {
+    @apply bg-purple-50;
+  }
+  
+  .gradient-blue-pink {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600;
   }
 }
