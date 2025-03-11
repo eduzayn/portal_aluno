@@ -51,42 +51,42 @@ export default function StudentDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4">
       <h1 className="text-3xl font-bold mb-6 text-foreground">Dashboard</h1>
       
       {/* Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center gap-2 mb-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center gap-2 mb-1 md:mb-2">
             <BookOpen className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">Cursos</h2>
           </div>
-          <p className="text-3xl font-bold text-foreground">{courses.length}</p>
-          <p className="text-sm text-gray-600">Cursos matriculados</p>
+          <p className="text-2xl md:text-3xl font-bold text-foreground">{courses.length}</p>
+          <p className="text-xs md:text-sm text-gray-600">Cursos matriculados</p>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center gap-2 mb-1 md:mb-2">
             <Award className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">Certificados</h2>
           </div>
-          <p className="text-3xl font-bold text-foreground">{student?.certificates.length || 0}</p>
-          <p className="text-sm text-gray-600">Certificados obtidos</p>
+          <p className="text-2xl md:text-3xl font-bold text-foreground">{student?.certificates.length || 0}</p>
+          <p className="text-xs md:text-sm text-gray-600">Certificados obtidos</p>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center gap-2 mb-1 md:mb-2">
             <Bell className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">Notificações</h2>
           </div>
-          <p className="text-3xl font-bold text-foreground">3</p>
-          <p className="text-sm text-gray-600">Novas notificações</p>
+          <p className="text-2xl md:text-3xl font-bold text-foreground">3</p>
+          <p className="text-xs md:text-sm text-gray-600">Novas notificações</p>
         </div>
       </div>
       
       {/* Cursos em andamento */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+      <div className="mb-6 md:mb-8">
+        <div className="flex items-center justify-between mb-3 md:mb-4">
           <h2 className="text-xl font-semibold">Cursos em Andamento</h2>
           <button 
             className="btn-outline text-sm"
@@ -96,7 +96,7 @@ export default function StudentDashboardPage() {
           </button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {courses
             .filter(course => course.status === 'in_progress')
             .slice(0, 3)
@@ -124,8 +124,8 @@ export default function StudentDashboardPage() {
       
       {/* Atividades recentes */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2>
-       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
+        <h2 className="text-xl font-semibold mb-3 md:mb-4">Atividades Recentes</h2>
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
           <div className="space-y-4">
             <div className="flex items-start gap-4 pb-4 border-b">
               <div className="gradient-blue-pink p-2 rounded-full">
