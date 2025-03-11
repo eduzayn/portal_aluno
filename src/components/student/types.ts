@@ -5,6 +5,8 @@ export interface Student {
   avatar?: string;
   enrollmentDate: string;
   certificates: Certificate[];
+  hasValidCredential?: boolean;
+  academicDocuments?: AcademicDocument[];
 }
 
 export interface Course {
@@ -45,6 +47,33 @@ export interface Certificate {
   issueDate: string;
   expiryDate?: string;
   downloadUrl: string;
+}
+
+export interface StudentCredential {
+  id: string;
+  studentId: string;
+  photoUrl: string;
+  qrCodeData: string;
+  issueDate: string;
+  expiryDate?: string;
+  status: 'active' | 'expired' | 'revoked';
+}
+
+export interface AcademicDocument {
+  id: string;
+  studentId: string;
+  documentType: 'grade_history' | 'enrollment_declaration' | 'course_completion';
+  title: string;
+  fileUrl: string;
+  issueDate: string;
+  expiryDate?: string;
+  metadata?: {
+    courseId?: string;
+    courseName?: string;
+    grade?: number;
+    completionDate?: string;
+    [key: string]: any;
+  };
 }
 
 export interface LearningPath {
