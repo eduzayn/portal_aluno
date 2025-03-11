@@ -1,6 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../../lib/supabase';
 
+/**
+ * @swagger
+ * /api/credentials/validate:
+ *   get:
+ *     summary: Validate a student credential using QR code
+ *     tags: [Credentials]
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: QR code data to validate
+ *     responses:
+ *       200:
+ *         description: Credential validation result
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 valid:
+ *                   type: boolean
+ *                 student:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     issueDate:
+ *                       type: string
+ *                       format: date-time
+ *                     expiryDate:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Invalid or missing QR code
+ *       401:
+ *         description: Expired or revoked credential
+ *       404:
+ *         description: Credential not found
+ *       500:
+ *         description: Server error
+ */
 export async function GET(request: NextRequest) {
   const qrCodeData = request.nextUrl.searchParams.get('code');
   
