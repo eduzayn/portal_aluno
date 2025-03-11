@@ -133,7 +133,7 @@ export async function getLearningPath(studentId: string): Promise<Module[]> {
     
     if (!enrollments.length) return []
     
-    const courseIds = enrollments.map(e => e.course_id)
+    const courseIds = enrollments.map((e: { course_id: string }) => e.course_id)
     
     const { data: modules, error: modulesError } = await supabase
       .from('modules')
