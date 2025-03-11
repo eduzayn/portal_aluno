@@ -3,21 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test:credentials": "node test-credential-validation.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "verify:supabase": "node scripts/verify-supabase-prod.js"
+    "verify:supabase": "node scripts/verify-supabase-prod.js",
+    "test:credential": "jest src/app/student/credential/__tests__",
+    "test:documents": "jest src/app/student/documents/__tests__",
+    "test:validation": "jest src/app/api/credentials/validate/__tests__",
+    "test:all": "jest"
   },
   "dependencies": {
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.49.1",
+    "clsx": "^2.1.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.0",
     "lucide-react": "^0.364.0",
     "next": "^15.2.1",
     "next-auth": "^4.24.11",
+    "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^3.0.2",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
