@@ -2,13 +2,16 @@ export interface Student {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
-  enrollmentDate: string;
+  enrollmentNumber: string;
+  course: string;
+  semester: number;
+  profileImage: string;
   certificates: Certificate[];
   enrolledCourses?: number;
   completedCourses?: number;
   certificatesEarned?: number;
   currentProgress?: number;
+  hasValidCredential?: boolean;
 }
 
 export interface Course {
@@ -16,48 +19,52 @@ export interface Course {
   title: string;
   description: string;
   instructor: string;
+  duration: string;
+  progress: number;
+  thumbnail: string;
+  status: 'not-started' | 'in-progress' | 'completed';
   startDate: string;
   endDate: string;
-  progress: number;
-  status: 'not_started' | 'in_progress' | 'completed';
-  modules: Module[];
-  imageUrl?: string;
-  duration?: string;
-  totalModules?: number;
-  totalLessons?: number;
-}
-
-export interface Module {
-  id: string;
-  title: string;
-  description: string;
-  duration: string;
-  status: 'locked' | 'available' | 'in_progress' | 'completed';
-  lessons: Lesson[];
-  courseId?: string;
-  order?: number;
-}
-
-export interface Lesson {
-  id: string;
-  title: string;
-  description: string;
-  duration: string;
-  type: 'video' | 'reading' | 'quiz' | 'assignment';
-  status: 'locked' | 'available' | 'in_progress' | 'completed';
-  order?: number;
-  completed?: boolean;
+  category: string;
+  tags: string[];
+  rating: number;
+  enrollmentDate: string;
+  lastAccessed: string | null;
 }
 
 export interface Certificate {
   id: string;
-  title: string;
   courseId: string;
   courseName: string;
   issueDate: string;
-  expiryDate?: string;
   downloadUrl: string;
-  certificateUrl?: string;
+}
+
+export interface StudentCredential {
+  id: string;
+  studentId: string;
+  photoUrl: string | null;
+  qrCodeData: string;
+  issueDate: string;
+  expiryDate: string;
+  status: 'active' | 'expired' | 'revoked';
+}
+
+export interface AcademicDocument {
+  id: string;
+  studentId: string;
+  documentType: 'enrollment_declaration' | 'grade_history' | 'course_completion';
+  title: string;
+  fileUrl: string | null;
+  issueDate: string;
+  metadata: {
+    semester?: string;
+    courses?: string[];
+    courseId?: string;
+    courseName?: string;
+    completionDate?: string;
+    grade?: number;
+  };
 }
 
 export interface FinancialRecord {
@@ -66,13 +73,6 @@ export interface FinancialRecord {
   amount: number;
   dueDate: Date;
   paymentDate: Date | null;
-  status: 'paid' | 'pending' | 'overdue' | 'future';
+  status: 'paid' | 'pending' | 'overdue';
   receiptUrl: string | null;
-}
-
-export interface LearningPath {
-  id: string;
-  title: string;
-  description: string;
-  modules: Module[];
 }
