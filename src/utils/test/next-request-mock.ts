@@ -1,43 +1,53 @@
+import { NextRequest } from 'next/server';
+
 /**
  * Creates a mock NextRequest object for testing API routes
+ * 
+ * @param url The URL to use for the request
+ * @param options Additional options for the request (method, headers, body)
+ * @returns A mocked NextRequest object
  */
-export function createMockNextRequest(url: string, options?: {
-  method?: string;
-  headers?: Record<string, string>;
-  cookies?: Record<string, string>;
-  body?: any;
-}) {
-  const defaultOptions = {
-    method: 'GET',
-    headers: {},
-    cookies: {},
-    ...options
-  };
-
-  // Create URL object
-  const urlObj = new URL(url);
+export function createMockNextRequest(
+  url: string,
+  options?: {
+    method?: string;
+    headers?: Record<string, string>;
+    body?: any;
+    cookies?: Record<string, string>;
+  }
+): NextRequest {
+  const parsedUrl = new URL(url.startsWith('http') ? url : `http://localhost${url}`);
   
-  // Create a mock NextRequest object
-  return {
-    url,
-    method: defaultOptions.method,
-    headers: new Headers(defaultOptions.headers),
-    nextUrl: urlObj,
+  // Create a headers object
+  const headers = new Headers();
+  if (options?.headers) {
+    Object.entries(options.headers).forEach(([key, value]) => {
+      headers.append(key, value);
+    });
+  }
+  
+  // Create a mock request
+  const mockRequest = {
+    nextUrl: parsedUrl,
+    url: parsedUrl.toString(),
+    method: options?.method || 'GET',
+    headers,
     cookies: {
-      get: (name: string) => defaultOptions.cookies[name] || null,
-      getAll: () => Object.entries(defaultOptions.cookies).map(([name, value]) => ({ name, value })),
+      get: (name: string) => options?.cookies?.[name] ? { name, value: options.cookies[name] } : undefined,
+      getAll: () => Object.entries(options?.cookies || {}).map(([name, value]) => ({ name, value })),
     },
-    json: async () => {
-      if (defaultOptions.body && typeof defaultOptions.body === 'object') {
-        return defaultOptions.body;
-      }
-      return {};
+    json: async () => options?.body || {},
+    text: async () => JSON.stringify(options?.body || {}),
+    formData: async () => {
+      throw new Error('formData not implemented in mock');
     },
-    text: async () => {
-      if (defaultOptions.body && typeof defaultOptions.body === 'string') {
-        return defaultOptions.body;
-      }
-      return '';
-    }
-  };
+    blob: async () => {
+      throw new Error('blob not implemented in mock');
+    },
+    arrayBuffer: async () => {
+      throw new Error('arrayBuffer not implemented in mock');
+    },
+  } as unknown as NextRequest;
+  
+  return mockRequest;
 }
