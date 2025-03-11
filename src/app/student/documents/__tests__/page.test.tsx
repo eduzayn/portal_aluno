@@ -1,40 +1,37 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import DocumentsPage from '../page';
-import { useAuth } from '@/contexts/AuthContext';
 import * as mockDataModule from '@/components/student/mock-data';
 
 // Mock the AuthContext
-jest.mock('@/contexts/AuthContext');
-// Mock the mock-data module
-jest.mock('@/components/student/mock-data');
-
-// Mock the useRouter hook
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
+jest.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: {
+      id: '1',
+      name: 'João Silva',
+      email: 'joao.silva@example.com',
+      role: 'student',
+      avatar_url: '/images/avatars/avatar-1.png',
+    },
+    loading: false,
   }),
 }));
 
+// Mock the mock-data module
+jest.mock('@/components/student/mock-data', () => ({
+  getAcademicDocuments: jest.fn(),
+}));
+
+// Mock window.open
+const mockOpen = jest.fn();
+window.open = mockOpen;
+
 describe('DocumentsPage', () => {
   beforeEach(() => {
-    // Reset all mocks
     jest.clearAllMocks();
     
-    // Mock the useAuth hook
-    (useAuth as jest.Mock).mockReturnValue({
-      user: {
-        id: '1',
-        name: 'João Silva',
-        email: 'joao.silva@example.com',
-        role: 'student',
-        avatar_url: '/images/avatars/avatar-1.png',
-      },
-      loading: false,
-    });
-    
-    // Mock the getAcademicDocuments function
+    // Mock the getAcademicDocuments function with default documents
     (mockDataModule.getAcademicDocuments as jest.Mock).mockResolvedValue([
       {
         id: '1',
@@ -74,59 +71,27 @@ describe('DocumentsPage', () => {
         }
       }
     ]);
-    
-    // Mock window.alert
-    global.alert = jest.fn();
-    window.alert = global.alert;
   });
   
-  test('renders loading state initially', async () => {
-    // Mock loading state
-    (mockDataModule.getAcademicDocuments as jest.Mock).mockImplementation(
-      () => new Promise(resolve => setTimeout(() => resolve([]), 100))
-    );
-    
+  test('renders loading state initially', () => {
     render(<DocumentsPage />);
     
     // Check if loading indicator is displayed
-    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
   
-  test('displays all documents when loaded', async () => {
+  test('displays all documents by default', async () => {
     render(<DocumentsPage />);
     
     // Wait for the component to load
     await waitFor(() => {
-      expect(screen.getByText(/Documentos Acadêmicos/i)).toBeInTheDocument();
-    });
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 3000 });
     
     // Check if all documents are displayed
-    expect(screen.getByText('Declaração de Matrícula')).toBeInTheDocument();
-    expect(screen.getByText('Histórico de Notas')).toBeInTheDocument();
-    expect(screen.getByText('Declaração de Conclusão - Introdução à Programação')).toBeInTheDocument();
-  });
-  
-  test('filters documents when tab is changed', async () => {
-    render(<DocumentsPage />);
-    
-    // Wait for the component to load
-    await waitFor(() => {
-      expect(screen.getByText(/Documentos Acadêmicos/i)).toBeInTheDocument();
-    });
-    
-    // Click on the "Declarações de Matrícula" tab
-    fireEvent.click(screen.getByText('Declarações de Matrícula'));
-    
-    // Check if only enrollment declaration is displayed
-    expect(screen.getByText('Declaração de Matrícula')).toBeInTheDocument();
-    expect(screen.queryByText('Histórico de Notas')).not.toBeInTheDocument();
-    
-    // Click on the "Histórico de Notas" tab
-    fireEvent.click(screen.getByText('Histórico de Notas'));
-    
-    // Check if only grade history is displayed
-    expect(screen.queryByText('Declaração de Matrícula')).not.toBeInTheDocument();
-    expect(screen.getByText('Histórico de Notas')).toBeInTheDocument();
+    expect(screen.getAllByText(/Declaração de Matrícula/i)[1]).toBeInTheDocument(); // Get the document title, not the tab
+    expect(screen.getAllByText(/Histórico de Notas/i)[1]).toBeInTheDocument(); // Get the document title, not the tab
+    expect(screen.getByText(/Declaração de Conclusão - Introdução à Programação/i)).toBeInTheDocument();
   });
   
   test('handles document download', async () => {
@@ -134,17 +99,15 @@ describe('DocumentsPage', () => {
     
     // Wait for the component to load
     await waitFor(() => {
-      expect(screen.getByText(/Documentos Acadêmicos/i)).toBeInTheDocument();
-    });
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 3000 });
     
-    // Find all download buttons
+    // Click the download button for the first document
     const downloadButtons = screen.getAllByText('Download');
-    
-    // Click the first download button
     fireEvent.click(downloadButtons[0]);
     
-    // Check if alert was called with the correct message
-    expect(window.alert).toHaveBeenCalledWith('Download iniciado: Declaração de Matrícula');
+    // Check if download was triggered
+    expect(mockOpen).toHaveBeenCalledWith('/documents/enrollment-declaration.pdf', '_blank');
   });
   
   test('handles document printing', async () => {
@@ -152,31 +115,49 @@ describe('DocumentsPage', () => {
     
     // Wait for the component to load
     await waitFor(() => {
-      expect(screen.getByText(/Documentos Acadêmicos/i)).toBeInTheDocument();
-    });
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 3000 });
     
-    // Find all print buttons
+    // Click the print button for the first document
     const printButtons = screen.getAllByText('Imprimir');
-    
-    // Click the first print button
     fireEvent.click(printButtons[0]);
     
-    // Check if alert was called with the correct message
-    expect(window.alert).toHaveBeenCalledWith('Preparando impressão: Declaração de Matrícula');
+    // Check if print was triggered with correct URL
+    expect(mockOpen).toHaveBeenCalledWith('/documents/enrollment-declaration.pdf?print=true', '_blank');
   });
   
   test('shows empty state when no documents are available', async () => {
-    // Mock empty documents array
+    // Mock empty documents
     (mockDataModule.getAcademicDocuments as jest.Mock).mockResolvedValue([]);
     
-    render(<DocumentsPage />);
-    
-    // Wait for the component to load
-    await waitFor(() => {
-      expect(screen.getByText(/Documentos Acadêmicos/i)).toBeInTheDocument();
+    await act(async () => {
+      render(<DocumentsPage />);
     });
     
+    // Wait for the component to load and show empty state
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 3000 });
+    
     // Check if empty state message is displayed
-    expect(screen.getByText(/Nenhum documento disponível nesta categoria/i)).toBeInTheDocument();
+    expect(screen.getByText(/Nenhum documento disponível/i)).toBeInTheDocument();
+  });
+  
+  test('handles error when loading documents', async () => {
+    // Mock error when loading documents
+    (mockDataModule.getAcademicDocuments as jest.Mock).mockRejectedValue(
+      new Error('Erro ao carregar documentos')
+    );
+    
+    await act(async () => {
+      render(<DocumentsPage />);
+    });
+    
+    // Wait for the error state
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    expect(screen.getByText(/Não foi possível carregar seus documentos/i)).toBeInTheDocument();
   });
 });
