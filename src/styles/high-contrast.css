@@ -1,0 +1,553 @@
+/* High Contrast Mode Styles for Portal Aluno */
+
+/* High Contrast Mode Variables */
+:root {
+  --high-contrast-text: #000000;
+  --high-contrast-background: #ffffff;
+  --high-contrast-border: #000000;
+  --high-contrast-link: #0000ee;
+  --high-contrast-focus: #ff8c00;
+  --high-contrast-button: #000000;
+  --high-contrast-button-text: #ffffff;
+  --high-contrast-input-bg: #ffffff;
+  --high-contrast-input-text: #000000;
+  --high-contrast-input-border: #000000;
+  --high-contrast-error: #ff0000;
+  --high-contrast-success: #008000;
+  --high-contrast-warning: #ff8c00;
+  --high-contrast-info: #0000ff;
+  --high-contrast-table-header: #dddddd;
+  --high-contrast-table-border: #000000;
+  --high-contrast-table-row-alt: #f0f0f0;
+  --high-contrast-focus-ring: 3px solid #ff8c00;
+}
+
+/* High Contrast Mode Class */
+.high-contrast {
+  /* Text and Background */
+  --text-primary: var(--high-contrast-text);
+  --text-secondary: var(--high-contrast-text);
+  --text-tertiary: var(--high-contrast-text);
+  --text-disabled: #555555;
+  
+  --bg-primary: var(--high-contrast-background);
+  --bg-secondary: #f0f0f0;
+  --bg-tertiary: #e0e0e0;
+  --bg-disabled: #cccccc;
+  
+  /* Borders */
+  --border-primary: var(--high-contrast-border);
+  --border-secondary: var(--high-contrast-border);
+  --border-tertiary: var(--high-contrast-border);
+  
+  /* Interactive Elements */
+  --link-color: var(--high-contrast-link);
+  --link-hover: #0000cc;
+  --link-visited: #551a8b;
+  
+  --button-bg: var(--high-contrast-button);
+  --button-text: var(--high-contrast-button-text);
+  --button-hover-bg: #333333;
+  --button-active-bg: #555555;
+  --button-disabled-bg: #777777;
+  --button-disabled-text: #dddddd;
+  
+  /* Form Elements */
+  --input-bg: var(--high-contrast-input-bg);
+  --input-text: var(--high-contrast-input-text);
+  --input-border: var(--high-contrast-input-border);
+  --input-focus-border: var(--high-contrast-focus);
+  --input-placeholder: #555555;
+  --input-disabled-bg: #eeeeee;
+  --input-disabled-text: #777777;
+  
+  /* Status Colors */
+  --error: var(--high-contrast-error);
+  --success: var(--high-contrast-success);
+  --warning: var(--high-contrast-warning);
+  --info: var(--high-contrast-info);
+  
+  /* Tables */
+  --table-header-bg: var(--high-contrast-table-header);
+  --table-border: var(--high-contrast-table-border);
+  --table-row-alt: var(--high-contrast-table-row-alt);
+  
+  /* Focus */
+  --focus-ring: var(--high-contrast-focus-ring);
+}
+
+/* Base Elements */
+.high-contrast body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Links */
+.high-contrast a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.high-contrast a:hover {
+  color: var(--link-hover);
+}
+
+.high-contrast a:visited {
+  color: var(--link-visited);
+}
+
+.high-contrast a:focus {
+  outline: var(--focus-ring);
+  text-decoration: none;
+}
+
+/* Buttons */
+.high-contrast button:not([aria-disabled="true"]),
+.high-contrast .button:not([aria-disabled="true"]) {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: 2px solid var(--border-primary);
+}
+
+.high-contrast button:hover:not([aria-disabled="true"]),
+.high-contrast .button:hover:not([aria-disabled="true"]) {
+  background-color: var(--button-hover-bg);
+}
+
+.high-contrast button:active:not([aria-disabled="true"]),
+.high-contrast .button:active:not([aria-disabled="true"]) {
+  background-color: var(--button-active-bg);
+}
+
+.high-contrast button[aria-disabled="true"],
+.high-contrast .button[aria-disabled="true"] {
+  background-color: var(--button-disabled-bg);
+  color: var(--button-disabled-text);
+  border: 2px solid var(--border-tertiary);
+}
+
+.high-contrast button:focus,
+.high-contrast .button:focus {
+  outline: var(--focus-ring);
+}
+
+/* Form Elements */
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 2px solid var(--input-border);
+}
+
+.high-contrast input:focus,
+.high-contrast select:focus,
+.high-contrast textarea:focus {
+  outline: var(--focus-ring);
+  border-color: var(--input-focus-border);
+}
+
+.high-contrast input::placeholder,
+.high-contrast textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+.high-contrast input:disabled,
+.high-contrast select:disabled,
+.high-contrast textarea:disabled {
+  background-color: var(--input-disabled-bg);
+  color: var(--input-disabled-text);
+}
+
+/* Labels */
+.high-contrast label {
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+/* Checkboxes and Radio Buttons */
+.high-contrast input[type="checkbox"],
+.high-contrast input[type="radio"] {
+  border: 2px solid var(--input-border);
+  background-color: var(--input-bg);
+}
+
+.high-contrast input[type="checkbox"]:checked,
+.high-contrast input[type="radio"]:checked {
+  background-color: var(--input-text);
+  border-color: var(--input-border);
+}
+
+.high-contrast input[type="checkbox"]:focus,
+.high-contrast input[type="radio"]:focus {
+  outline: var(--focus-ring);
+}
+
+/* Tables */
+.high-contrast table {
+  border-collapse: collapse;
+  border: 2px solid var(--table-border);
+}
+
+.high-contrast th {
+  background-color: var(--table-header-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--table-border);
+  font-weight: bold;
+}
+
+.high-contrast td {
+  border: 1px solid var(--table-border);
+}
+
+.high-contrast tr:nth-child(even) {
+  background-color: var(--table-row-alt);
+}
+
+/* Status Messages */
+.high-contrast .error-message {
+  color: var(--error);
+  background-color: var(--bg-primary);
+  border: 2px solid var(--error);
+  padding: 0.5rem;
+}
+
+.high-contrast .success-message {
+  color: var(--success);
+  background-color: var(--bg-primary);
+  border: 2px solid var(--success);
+  padding: 0.5rem;
+}
+
+.high-contrast .warning-message {
+  color: var(--warning);
+  background-color: var(--bg-primary);
+  border: 2px solid var(--warning);
+  padding: 0.5rem;
+}
+
+.high-contrast .info-message {
+  color: var(--info);
+  background-color: var(--bg-primary);
+  border: 2px solid var(--info);
+  padding: 0.5rem;
+}
+
+/* Focus Indicators */
+.high-contrast *:focus-visible {
+  outline: var(--focus-ring);
+}
+
+/* Cards */
+.high-contrast .card {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+/* Navigation */
+.high-contrast nav {
+  border: 2px solid var(--border-primary);
+}
+
+.high-contrast nav a {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+.high-contrast nav a:hover {
+  color: var(--link-hover);
+}
+
+.high-contrast nav a:focus {
+  outline: var(--focus-ring);
+}
+
+.high-contrast nav a[aria-current="page"] {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  text-decoration: none;
+}
+
+/* Dialogs */
+.high-contrast dialog,
+.high-contrast .dialog {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast dialog::backdrop,
+.high-contrast .dialog-backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Tabs */
+.high-contrast .tabs {
+  border: 2px solid var(--border-primary);
+}
+
+.high-contrast .tab {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .tab[aria-selected="true"] {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.high-contrast .tab:focus {
+  outline: var(--focus-ring);
+}
+
+.high-contrast .tabpanel {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+/* Accordions */
+.high-contrast .accordion {
+  border: 2px solid var(--border-primary);
+}
+
+.high-contrast .accordion-button {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-primary);
+}
+
+.high-contrast .accordion-button[aria-expanded="true"] {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.high-contrast .accordion-button:focus {
+  outline: var(--focus-ring);
+}
+
+.high-contrast .accordion-panel {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+/* Tooltips */
+.high-contrast .tooltip {
+  position: relative;
+}
+
+.high-contrast .tooltip-content {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-primary);
+}
+
+/* Badges */
+.high-contrast .badge {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Progress Bars */
+.high-contrast .progress {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .progress-bar {
+  background-color: var(--button-bg);
+}
+
+/* Alerts */
+.high-contrast .alert {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.high-contrast .alert-error {
+  border-color: var(--error);
+}
+
+.high-contrast .alert-success {
+  border-color: var(--success);
+}
+
+.high-contrast .alert-warning {
+  border-color: var(--warning);
+}
+
+.high-contrast .alert-info {
+  border-color: var(--info);
+}
+
+/* Breadcrumbs */
+.high-contrast .breadcrumbs {
+  color: var(--text-primary);
+}
+
+.high-contrast .breadcrumb-item {
+  color: var(--text-primary);
+}
+
+.high-contrast .breadcrumb-separator {
+  color: var(--text-primary);
+}
+
+.high-contrast .breadcrumb-link {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+.high-contrast .breadcrumb-link:focus {
+  outline: var(--focus-ring);
+}
+
+.high-contrast .breadcrumb-current {
+  font-weight: bold;
+}
+
+/* Skip Links */
+.high-contrast .skip-link:focus {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-primary);
+  outline: var(--focus-ring);
+}
+
+/* Modals */
+.high-contrast .modal {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .modal-header {
+  border-bottom: 2px solid var(--border-primary);
+}
+
+.high-contrast .modal-footer {
+  border-top: 2px solid var(--border-primary);
+}
+
+.high-contrast .modal-close {
+  color: var(--text-primary);
+}
+
+/* Dropdown Menus */
+.high-contrast .dropdown-menu {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .dropdown-item {
+  color: var(--text-primary);
+}
+
+.high-contrast .dropdown-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.high-contrast .dropdown-item:focus {
+  outline: var(--focus-ring);
+}
+
+/* Pagination */
+.high-contrast .pagination {
+  border: 2px solid var(--border-primary);
+}
+
+.high-contrast .pagination-item {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.high-contrast .pagination-item[aria-current="page"] {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.high-contrast .pagination-item:focus {
+  outline: var(--focus-ring);
+}
+
+/* Icons */
+.high-contrast svg {
+  fill: currentColor;
+}
+
+.high-contrast .icon {
+  color: var(--text-primary);
+}
+
+.high-contrast button:not([aria-disabled="true"]) .icon,
+.high-contrast .button:not([aria-disabled="true"]) .icon {
+  color: var(--button-text);
+}
+
+/* Student Portal Specific Elements */
+.high-contrast .course-card {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .course-progress {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .course-progress-bar {
+  background-color: var(--button-bg);
+}
+
+.high-contrast .student-profile {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .notification-badge {
+  background-color: var(--error);
+  color: var(--button-text);
+  border: 2px solid var(--border-primary);
+}
+
+.high-contrast .grade-indicator {
+  border: 2px solid var(--border-primary);
+  font-weight: bold;
+}
+
+.high-contrast .grade-indicator-high {
+  color: var(--success);
+}
+
+.high-contrast .grade-indicator-medium {
+  color: var(--warning);
+}
+
+.high-contrast .grade-indicator-low {
+  color: var(--error);
+}
+
+.high-contrast .calendar-event {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .document-item {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .message-item {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
+.high-contrast .message-unread {
+  font-weight: bold;
+}
+
+.high-contrast .dashboard-widget {
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
