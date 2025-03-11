@@ -19,16 +19,16 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
   }
 
   return (
-    <div className="flex min-h-screen bg-muted">
+    <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar para desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 shadow-md">
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 transition-all duration-300">
         <div className="p-4 border-b border-gray-200">
           <Link href="/student/dashboard" className="flex items-center space-x-2">
-            <div className="gradient-blue-pink rounded-md p-1.5">
+            <div className="bg-indigo-600 rounded-md p-1.5">
               <span className="text-white font-bold text-xl">E</span>
             </div>
             <span className="font-bold text-xl">
-              Edun<span className="text-primary">éxia</span>
+              Edun<span className="text-indigo-600">éxia</span>
             </span>
           </Link>
         </div>
@@ -37,10 +37,10 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
             <Link
               key={item.path}
               href={item.path}
-              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-all ${
+              className={`sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg ${
                 pathname === item.path
-                  ? 'gradient-blue-pink text-white font-medium shadow-md'
-                  : 'text-gray-700 hover:bg-muted hover:text-primary'
+                  ? 'active'
+                  : 'text-gray-700'
               }`}
               aria-current={pathname === item.path ? 'page' : undefined}
             >
@@ -51,7 +51,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
         </nav>
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full gradient-blue-pink flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold">
               JS
             </div>
             <div>
@@ -93,14 +93,14 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
       {/* Sidebar móvel */}
       {isSidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black bg-opacity-50">
-          <div className="absolute top-0 left-0 bottom-0 w-64 bg-white shadow-lg">
+          <div className="absolute top-0 left-0 bottom-0 w-64 bg-white transition-all duration-300">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
               <Link href="/student/dashboard" className="flex items-center space-x-2">
-                <div className="gradient-blue-pink rounded-md p-1.5">
+                <div className="bg-indigo-600 rounded-md p-1.5">
                   <span className="text-white font-bold text-xl">E</span>
                 </div>
                 <span className="font-bold text-xl">
-                  Edun<span className="text-primary">éxia</span>
+                  Edun<span className="text-indigo-600">éxia</span>
                 </span>
               </Link>
               <button onClick={toggleSidebar}>
@@ -112,10 +112,10 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-all ${
+                  className={`sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg ${
                     pathname === item.path
-                      ? 'gradient-blue-pink text-white font-medium shadow-md'
-                      : 'text-gray-700 hover:bg-muted hover:text-primary'
+                      ? 'active'
+                      : 'text-gray-700'
                   }`}
                   onClick={toggleSidebar}
                   aria-current={pathname === item.path ? 'page' : undefined}
