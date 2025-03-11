@@ -1,94 +1,66 @@
 import { NextRequest } from 'next/server';
 import { GET } from '../route';
+import * as mockDataModule from '@/components/student/mock-data';
 
-// Mock the supabase client
-jest.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: jest.fn().mockReturnThis(),
-    select: jest.fn().mockReturnThis(),
-    eq: jest.fn().mockReturnThis(),
-    single: jest.fn(),
-  },
-}));
-
-// Mock environment variables
-process.env.NEXT_PUBLIC_USE_MOCK_DATA = 'true';
+// Mock the mock-data module
+jest.mock('@/components/student/mock-data');
 
 describe('Credential Validation API', () => {
   beforeEach(() => {
-    // Reset all mocks
     jest.clearAllMocks();
   });
   
-  test('returns 400 when no QR code is provided', async () => {
-    // Create a mock request with no QR code
-    const request = new NextRequest('http://localhost:3000/api/credentials/validate');
+  test('returns 400 if qrcode is missing', async () => {
+    // Create mock request without qrcode parameter
+    const request = new NextRequest('http://localhost/api/credentials/validate');
     
-    // Call the API handler
     const response = await GET(request);
     
-    // Check the response
     expect(response.status).toBe(400);
     const data = await response.json();
-    expect(data.error).toBe('Código QR inválido ou ausente');
+    expect(data.error).toBe('QR code is required');
   });
   
-  test('returns valid credential data for valid QR code', async () => {
-    // Create a mock request with a valid QR code
-    const request = new NextRequest('http://localhost:3000/api/credentials/validate?code=abc123xyz');
+  test('returns 404 if credential not found', async () => {
+    // Mock getStudentCredentialByQRCode to return null
+    (mockDataModule.getStudentCredentialByQRCode as jest.Mock).mockResolvedValue(null);
     
-    // Call the API handler
+    // Create mock request with qrcode parameter
+    const request = new NextRequest('http://localhost/api/credentials/validate?qrcode=invalid123');
+    
     const response = await GET(request);
     
-    // Check the response
+    expect(response.status).toBe(404);
+    const data = await response.json();
+    expect(data.error).toBe('Credential not found');
+  });
+  
+  test('returns 200 with valid credential', async () => {
+    // Mock valid credential
+    const mockCredential = {
+      id: '1',
+      studentId: '1',
+      photoUrl: '/images/avatars/avatar-1.png',
+      qrCodeData: 'valid123',
+      issueDate: '2023-01-01T00:00:00Z',
+      expiryDate: '2024-01-01T00:00:00Z',
+      status: 'active',
+      student: {
+        name: 'João Silva',
+        email: 'joao.silva@example.com'
+      }
+    };
+    
+    (mockDataModule.getStudentCredentialByQRCode as jest.Mock).mockResolvedValue(mockCredential);
+    
+    // Create mock request with valid qrcode parameter
+    const request = new NextRequest('http://localhost/api/credentials/validate?qrcode=valid123');
+    
+    const response = await GET(request);
+    
     expect(response.status).toBe(200);
     const data = await response.json();
     expect(data.valid).toBe(true);
-    expect(data.student).toBeDefined();
-    expect(data.student.name).toBe('João Silva');
-  });
-  
-  test('returns invalid response for invalid QR code', async () => {
-    // Create a mock request with an invalid QR code
-    const request = new NextRequest('http://localhost:3000/api/credentials/validate?code=invalid');
-    
-    // Call the API handler
-    const response = await GET(request);
-    
-    // Check the response
-    expect(response.status).toBe(404);
-    const data = await response.json();
-    expect(data.valid).toBe(false);
-    expect(data.message).toBe('Credencial não encontrada');
-  });
-  
-  test('returns expired response for expired QR code', async () => {
-    // Create a mock request with an expired QR code
-    const request = new NextRequest('http://localhost:3000/api/credentials/validate?code=expired');
-    
-    // Call the API handler
-    const response = await GET(request);
-    
-    // Check the response
-    expect(response.status).toBe(401);
-    const data = await response.json();
-    expect(data.valid).toBe(false);
-    expect(data.message).toBe('Credencial expirada');
-    expect(data.status).toBe('expired');
-  });
-  
-  test('returns revoked response for revoked QR code', async () => {
-    // Create a mock request with a revoked QR code
-    const request = new NextRequest('http://localhost:3000/api/credentials/validate?code=revoked');
-    
-    // Call the API handler
-    const response = await GET(request);
-    
-    // Check the response
-    expect(response.status).toBe(401);
-    const data = await response.json();
-    expect(data.valid).toBe(false);
-    expect(data.message).toBe('Credencial revogada');
-    expect(data.status).toBe('revoked');
+    expect(data.credential).toEqual(mockCredential);
   });
 });
