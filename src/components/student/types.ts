@@ -46,3 +46,10 @@ export interface Certificate {
   expiryDate?: string;
   downloadUrl: string;
 }
+
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  modules: Module[];
+}

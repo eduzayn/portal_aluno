@@ -56,30 +56,30 @@ export default function StudentDashboardPage() {
       
       {/* Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow transition-all duration-200">
           <div className="flex items-center gap-2 mb-2">
-            <BookOpen className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">Cursos</h2>
+            <BookOpen className="h-5 w-5 text-indigo-600" />
+            <h2 className="text-lg font-semibold text-gray-800">Cursos</h2>
           </div>
-          <p className="text-3xl font-bold">{courses.length}</p>
+          <p className="text-3xl font-bold text-gray-800">{courses.length}</p>
           <p className="text-sm text-gray-600">Cursos matriculados</p>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow transition-all duration-200">
           <div className="flex items-center gap-2 mb-2">
-            <Award className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">Certificados</h2>
+            <Award className="h-5 w-5 text-indigo-600" />
+            <h2 className="text-lg font-semibold text-gray-800">Certificados</h2>
           </div>
-          <p className="text-3xl font-bold">{student?.certificates.length || 0}</p>
+          <p className="text-3xl font-bold text-gray-800">{student?.certificates.length || 0}</p>
           <p className="text-sm text-gray-600">Certificados obtidos</p>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow transition-all duration-200">
           <div className="flex items-center gap-2 mb-2">
-            <Bell className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">Notificações</h2>
+            <Bell className="h-5 w-5 text-indigo-600" />
+            <h2 className="text-lg font-semibold text-gray-800">Notificações</h2>
           </div>
-          <p className="text-3xl font-bold">3</p>
+          <p className="text-3xl font-bold text-gray-800">3</p>
           <p className="text-sm text-gray-600">Novas notificações</p>
         </div>
       </div>
@@ -124,39 +124,39 @@ export default function StudentDashboardPage() {
       
       {/* Atividades recentes */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2>
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">Atividades Recentes</h2>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow transition-all duration-200">
           <div className="space-y-4">
             <div className="flex items-start gap-4 pb-4 border-b">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <BookOpen className="h-5 w-5 text-primary" />
+              <div className="bg-indigo-100 p-2 rounded-full">
+                <BookOpen className="h-5 w-5 text-indigo-600" />
               </div>
               <div>
-                <p className="font-medium">Aula concluída</p>
+                <p className="font-medium text-gray-800">Aula concluída</p>
                 <p className="text-sm text-gray-600">Você concluiu a aula "Introdução ao JavaScript" do curso Desenvolvimento Web</p>
-                <p className="text-xs text-gray-600 mt-1">Hoje, 10:30</p>
+                <p className="text-xs text-gray-500 mt-1">Hoje, 10:30</p>
               </div>
             </div>
             
             <div className="flex items-start gap-4 pb-4 border-b">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <Award className="h-5 w-5 text-primary" />
+              <div className="bg-indigo-100 p-2 rounded-full">
+                <Award className="h-5 w-5 text-indigo-600" />
               </div>
               <div>
-                <p className="font-medium">Nota atribuída</p>
+                <p className="font-medium text-gray-800">Nota atribuída</p>
                 <p className="text-sm text-gray-600">Você recebeu nota 9.5/10 no exercício "Estruturas de Dados" do curso Introdução à Programação</p>
-                <p className="text-xs text-gray-600 mt-1">Ontem, 15:45</p>
+                <p className="text-xs text-gray-500 mt-1">Ontem, 15:45</p>
               </div>
             </div>
             
             <div className="flex items-start gap-4">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <MessageSquare className="h-5 w-5 text-primary" />
+              <div className="bg-indigo-100 p-2 rounded-full">
+                <MessageSquare className="h-5 w-5 text-indigo-600" />
               </div>
               <div>
-                <p className="font-medium">Nova mensagem</p>
+                <p className="font-medium text-gray-800">Nova mensagem</p>
                 <p className="text-sm text-gray-600">Você recebeu uma mensagem do professor Carlos sobre o curso Banco de Dados</p>
-                <p className="text-xs text-gray-600 mt-1">2 dias atrás, 09:15</p>
+                <p className="text-xs text-gray-500 mt-1">2 dias atrás, 09:15</p>
               </div>
             </div>
           </div>

@@ -25,20 +25,20 @@ export function CourseCard({ course, onContinue }: CourseCardProps) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden transition-all hover:shadow-md bg-white">
-      <div className="h-3 bg-primary w-full"></div>
+    <div className="border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 hover:shadow-md bg-white">
+      <div className="h-3 bg-indigo-600 w-full"></div>
       <div className="p-6">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-bold">{course.title}</h3>
+          <h3 className="text-lg font-semibold text-gray-800">{course.title}</h3>
           {getStatusBadge()}
         </div>
-        <p className="text-gray-600 text-sm mb-4">{course.description}</p>
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
         
         <div className="mb-4">
           <p className="text-sm text-gray-600">Progresso: {course.progress}%</p>
           <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
             <div 
-              className="bg-primary h-2.5 rounded-full" 
+              className="bg-indigo-600 h-2.5 rounded-full" 
               style={{ width: `${course.progress}%` }}
             ></div>
           </div>

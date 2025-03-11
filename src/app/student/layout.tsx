@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Bell } from 'lucide-react'
-import { studentNavItems } from '../../../components/student/routes'
+import { studentNavItems } from '../../components/student/routes'
 
 interface StudentLayoutProps {
   children: React.ReactNode
@@ -19,16 +19,16 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar para desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200">
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 transition-all duration-300">
         <div className="p-4 border-b border-gray-200">
           <Link href="/student/dashboard" className="flex items-center space-x-2">
-            <div className="bg-gradient-to-r from-primary to-accent rounded-md p-1.5">
+            <div className="bg-indigo-600 rounded-md p-1.5">
               <span className="text-white font-bold text-xl">E</span>
             </div>
             <span className="font-bold text-xl">
-              Edun<span className="text-primary">éxia</span>
+              Edun<span className="text-indigo-600">éxia</span>
             </span>
           </Link>
         </div>
@@ -37,10 +37,10 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
             <Link
               key={item.path}
               href={item.path}
-              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+              className={`sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg ${
                 pathname === item.path
-                  ? 'bg-primary/10 text-primary font-medium'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? 'active'
+                  : 'text-gray-700'
               }`}
             >
               <item.icon className="h-5 w-5" />
@@ -89,14 +89,14 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
       {/* Sidebar móvel */}
       {isSidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black bg-opacity-50">
-          <div className="absolute top-0 left-0 bottom-0 w-64 bg-white">
+          <div className="absolute top-0 left-0 bottom-0 w-64 bg-white transition-all duration-300">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
               <Link href="/student/dashboard" className="flex items-center space-x-2">
-                <div className="bg-gradient-to-r from-primary to-accent rounded-md p-1.5">
+                <div className="bg-indigo-600 rounded-md p-1.5">
                   <span className="text-white font-bold text-xl">E</span>
                 </div>
                 <span className="font-bold text-xl">
-                  Edun<span className="text-primary">éxia</span>
+                  Edun<span className="text-indigo-600">éxia</span>
                 </span>
               </Link>
               <button onClick={toggleSidebar}>
@@ -108,10 +108,10 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                  className={`sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg ${
                     pathname === item.path
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'active'
+                      : 'text-gray-700'
                   }`}
                   onClick={toggleSidebar}
                 >
