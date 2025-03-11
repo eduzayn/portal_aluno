@@ -3,56 +3,78 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAcademicDocuments } from '@/components/student/mock-data';
-import { AcademicDocument } from '@/components/student/types';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Download, Printer, FileText, Calendar, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FileText, Download, Printer, AlertCircle } from 'lucide-react';
 
-export default function StudentDocumentsPage() {
+export default function DocumentsPage() {
   const { user } = useAuth();
-  const [documents, setDocuments] = useState<AcademicDocument[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<string>('all');
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('all');
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      if (user) {
-        try {
-          const docs = await getAcademicDocuments(user.id);
-          setDocuments(docs);
-        } catch (error) {
-          console.error('Erro ao buscar documentos:', error);
-        } finally {
-          setLoading(false);
-        }
+    const loadDocuments = async () => {
+      if (!user) return;
+      
+      try {
+        const docs = await getAcademicDocuments(user.id);
+        setDocuments(docs);
+      } catch (error) {
+        console.error('Erro ao carregar documentos:', error);
+        setError('Erro ao carregar documentos');
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchDocuments();
+    
+    loadDocuments();
   }, [user]);
 
-  const handleDownload = (fileUrl: string, title: string) => {
-    // Em um ambiente real, isso seria um link para download do arquivo
-    // Para o mock, apenas simular o download
-    alert(`Download iniciado: ${title}`);
+  const filteredDocuments = activeTab === 'all' 
+    ? documents 
+    : documents.filter(doc => doc.documentType === activeTab);
+
+  const handleDownload = (fileUrl) => {
+    window.open(fileUrl, '_blank');
   };
 
-  const handlePrint = (fileUrl: string, title: string) => {
-    // Em um ambiente real, isso abriria o documento para impressão
-    // Para o mock, apenas simular a impressão
-    alert(`Preparando impressão: ${title}`);
-  };
-
-  const getDocumentsByType = (type: string) => {
-    if (type === 'all') {
-      return documents;
-    }
-    return documents.filter(doc => doc.documentType === type);
+  const handlePrint = (fileUrl) => {
+    window.open(`${fileUrl}?print=true`, '_blank');
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen" data-testid="loading-spinner">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+            <p className="text-red-700">Não foi possível carregar seus documentos. Por favor, tente novamente mais tarde.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (documents.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-6 text-indigo-700">Documentos Acadêmicos</h1>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+          <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">Nenhum documento disponível</h2>
+          <p className="text-gray-600">
+            Você ainda não possui documentos acadêmicos disponíveis.
+          </p>
+        </div>
       </div>
     );
   }
@@ -61,92 +83,93 @@ export default function StudentDocumentsPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6 text-indigo-700">Documentos Acadêmicos</h1>
       
-      <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-        <TabsList className="mb-6 bg-gray-100 p-1 rounded-lg">
-          <TabsTrigger value="all" className="rounded-md data-[state=active]:bg-white data-[state=active]:text-indigo-700">
-            Todos
-          </TabsTrigger>
-          <TabsTrigger value="enrollment_declaration" className="rounded-md data-[state=active]:bg-white data-[state=active]:text-indigo-700">
-            Declarações de Matrícula
-          </TabsTrigger>
-          <TabsTrigger value="grade_history" className="rounded-md data-[state=active]:bg-white data-[state=active]:text-indigo-700">
-            Histórico de Notas
-          </TabsTrigger>
-          <TabsTrigger value="course_completion" className="rounded-md data-[state=active]:bg-white data-[state=active]:text-indigo-700">
-            Conclusão de Cursos
-          </TabsTrigger>
+      <Tabs defaultValue="all" onValueChange={setActiveTab}>
+        <TabsList className="mb-6">
+          <TabsTrigger value="all">Todos</TabsTrigger>
+          <TabsTrigger value="enrollment_declaration">Declaração de Matrícula</TabsTrigger>
+          <TabsTrigger value="grade_history">Histórico de Notas</TabsTrigger>
+          <TabsTrigger value="course_completion">Declaração de Conclusão</TabsTrigger>
         </TabsList>
         
-        {['all', 'enrollment_declaration', 'grade_history', 'course_completion'].map(tabValue => (
-          <TabsContent key={tabValue} value={tabValue} className="space-y-4">
-            {getDocumentsByType(tabValue).length === 0 ? (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-gray-500">Nenhum documento disponível nesta categoria</p>
-              </div>
-            ) : (
-              getDocumentsByType(tabValue).map(document => (
-                <div key={document.id} className="bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:border-indigo-300 transition-colors">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-medium text-gray-900">{document.title}</h3>
-                      
-                      <div className="mt-2 flex flex-wrap gap-2 text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          <span>Emitido em: {new Date(document.issueDate).toLocaleDateString('pt-BR')}</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <Clock className="w-4 h-4 mr-1" />
-                          <span>Horário: {new Date(document.issueDate).toLocaleTimeString('pt-BR')}</span>
-                        </div>
-                      </div>
-                      
-                      {document.metadata && (
-                        <div className="mt-2 text-sm text-gray-600">
-                          {document.documentType === 'enrollment_declaration' && (
-                            <p>Semestre: {document.metadata.semester}</p>
-                          )}
-                          
-                          {document.documentType === 'grade_history' && (
-                            <p>Semestre: {document.metadata.semester}</p>
-                          )}
-                          
-                          {document.documentType === 'course_completion' && (
-                            <div>
-                              <p>Curso: {document.metadata.courseName}</p>
-                              <p>Conclusão: {document.metadata.completionDate}</p>
-                              <p>Nota final: {document.metadata.grade}</p>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="flex mt-4 md:mt-0 space-x-2">
-                      <button
-                        onClick={() => handleDownload(document.fileUrl || '', document.title)}
-                        className="flex items-center px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                      >
-                        <Download className="w-4 h-4 mr-1" />
-                        <span className="text-sm">Download</span>
-                      </button>
-                      
-                      <button
-                        onClick={() => handlePrint(document.fileUrl || '', document.title)}
-                        className="flex items-center px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-                      >
-                        <Printer className="w-4 h-4 mr-1" />
-                        <span className="text-sm">Imprimir</span>
-                      </button>
-                    </div>
+        <TabsContent value={activeTab} className="space-y-4">
+          {filteredDocuments.map((document) => (
+            <div key={document.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-800">{document.title}</h2>
+                    <p className="text-sm text-gray-600">
+                      Emitido em: {new Date(document.issueDate).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleDownload(document.fileUrl)}
+                      className="flex items-center px-3 py-1 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 transition-colors"
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      Download
+                    </button>
+                    <button
+                      onClick={() => handlePrint(document.fileUrl)}
+                      className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                      <Printer className="h-4 w-4 mr-1" />
+                      Imprimir
+                    </button>
                   </div>
                 </div>
-              ))
-            )}
-          </TabsContent>
-        ))}
+              </div>
+              
+              <div className="p-4 bg-gray-50">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {document.documentType === 'enrollment_declaration' && (
+                    <>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Semestre</p>
+                        <p className="text-gray-800">{document.metadata.semester}</p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {document.documentType === 'grade_history' && (
+                    <>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Semestre</p>
+                        <p className="text-gray-800">{document.metadata.semester}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Cursos</p>
+                        <p className="text-gray-800">
+                          {document.metadata.courses.join(', ')}
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {document.documentType === 'course_completion' && (
+                    <>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Curso</p>
+                        <p className="text-gray-800">{document.metadata.courseName}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Data de Conclusão</p>
+                        <p className="text-gray-800">
+                          {new Date(document.metadata.completionDate).toLocaleDateString('pt-BR')}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Nota Final</p>
+                        <p className="text-gray-800">{document.metadata.grade}</p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </TabsContent>
       </Tabs>
     </div>
   );
