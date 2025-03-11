@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { AuthState, LoginCredentials, RegisterCredentials, UserProfile } from '../types/auth';
