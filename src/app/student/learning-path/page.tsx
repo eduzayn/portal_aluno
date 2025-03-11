@@ -68,6 +68,7 @@ export default function LearningPathPage() {
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
               }`}
               onClick={() => handleTabChange(path.id)}
+              data-testid={`path-tab-${path.id}`}
             >
               {path.title}
             </button>
@@ -126,6 +127,7 @@ export default function LearningPathPage() {
                         : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1'
                     }`}
                     disabled={module.status === 'locked'}
+                    data-testid={`module-action-${module.id}`}
                   >
                     {module.status === 'completed' ? 'Revisar' :
                      module.status === 'in_progress' ? 'Continuar' :
@@ -168,6 +170,7 @@ export default function LearningPathPage() {
                     <button 
                       className="p-1 text-gray-500 hover:text-indigo-600 disabled:opacity-50 transition-colors"
                       disabled={lesson.status === 'locked'}
+                      data-testid={`lesson-action-${lesson.id}`}
                     >
                       <ArrowRight className="h-4 w-4" />
                     </button>
