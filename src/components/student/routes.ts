@@ -1,6 +1,7 @@
 import { 
   BookOpen, Award, Bell, MessageSquare, User, 
-  Settings, FileCheck, BookMarked, CreditCard, BarChart2 
+  Settings, FileCheck, BookMarked, CreditCard, BarChart2,
+  CreditCard as CardIcon, FileText
 } from 'lucide-react';
 
 export interface RouteItem {
@@ -11,34 +12,34 @@ export interface RouteItem {
 
 export interface StudentRoutes {
   dashboard: string;
+  profile: string;
   courses: string;
   certificates: string;
-  grades: string;
-  exercises: string;
-  materials: string;
-  messages: string;
   notifications: string;
-  profile: string;
+  messages: string;
   settings: string;
+  grades: string;
   help: string;
   financial: string;
   learningPath: string;
+  credential: string;
+  documents: string;
 }
 
 export const studentRoutes: StudentRoutes = {
   dashboard: '/student/dashboard',
+  profile: '/student/profile',
   courses: '/student/courses',
   certificates: '/student/certificates',
-  grades: '/student/grades',
-  exercises: '/student/exercises',
-  materials: '/student/materials',
-  messages: '/student/messages',
   notifications: '/student/notifications',
-  profile: '/student/profile',
+  messages: '/student/messages',
   settings: '/student/settings',
+  grades: '/student/grades',
   help: '/student/help',
   financial: '/student/financial',
   learningPath: '/student/learning-path',
+  credential: '/student/credential',
+  documents: '/student/documents',
 };
 
 export const studentNavItems: RouteItem[] = [
@@ -48,19 +49,29 @@ export const studentNavItems: RouteItem[] = [
     icon: BarChart2,
   },
   {
+    path: studentRoutes.profile,
+    name: 'Perfil',
+    icon: User,
+  },
+  {
     path: studentRoutes.courses,
-    name: 'Meus Cursos',
+    name: 'Cursos',
     icon: BookOpen,
   },
   {
     path: studentRoutes.learningPath,
-    name: 'Rota de Aprendizagem',
+    name: 'Rotas de Aprendizagem',
     icon: BookMarked,
   },
   {
-    path: studentRoutes.materials,
-    name: 'Material Didático',
-    icon: BookMarked,
+    path: studentRoutes.credential,
+    name: 'Credencial',
+    icon: CardIcon,
+  },
+  {
+    path: studentRoutes.documents,
+    name: 'Documentos',
+    icon: FileText,
   },
   {
     path: studentRoutes.certificates,
@@ -68,9 +79,9 @@ export const studentNavItems: RouteItem[] = [
     icon: Award,
   },
   {
-    path: studentRoutes.notifications,
-    name: 'Notificações',
-    icon: Bell,
+    path: studentRoutes.grades,
+    name: 'Notas',
+    icon: FileCheck,
   },
   {
     path: studentRoutes.financial,
@@ -78,8 +89,18 @@ export const studentNavItems: RouteItem[] = [
     icon: CreditCard,
   },
   {
-    path: studentRoutes.profile,
-    name: 'Perfil',
-    icon: User,
+    path: studentRoutes.notifications,
+    name: 'Notificações',
+    icon: Bell,
+  },
+  {
+    path: studentRoutes.messages,
+    name: 'Mensagens',
+    icon: MessageSquare,
+  },
+  {
+    path: studentRoutes.settings,
+    name: 'Configurações',
+    icon: Settings,
   },
 ];
