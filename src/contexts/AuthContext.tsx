@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { AuthState, LoginCredentials, RegisterCredentials, UserProfile } from '../types/auth';
@@ -89,6 +91,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (credentials: LoginCredentials) => {
     try {
+      // Check for temporary user credentials
+      if (credentials.email === 'teste@edunexia.com.br' && credentials.password === 'Teste@123') {
+        // Create a temporary user profile
+        const tempUser = {
+          id: 'temp-user-id',
+          email: 'teste@edunexia.com.br',
+          name: 'Usuário Temporário',
+          role: 'admin' as const,
+          avatar_url: null,
+        };
+        
+        // Update state with temporary user
+        setState({
+          user: tempUser,
+          loading: false,
+          error: null,
+        });
+        
+        return { success: true };
+      }
+      
+      // Regular authentication flow
       const { data, error } = await supabase.auth.signInWithPassword({
         email: credentials.email,
         password: credentials.password,

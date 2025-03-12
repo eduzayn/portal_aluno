@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -108,6 +110,9 @@ export default function LoginForm() {
           <Link href="/register" className="text-primary hover:text-primary-dark">
             Registre-se
           </Link>
+        </p>
+        <p className="text-xs text-gray-500 mt-2">
+          Credenciais temporárias: teste@edunexia.com.br / Teste@123
         </p>
       </div>
     </div>
