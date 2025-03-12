@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAcademicDocuments } from '@/components/student/mock-data';
 import { AcademicDocument } from '@/components/student/types';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { Download, Printer, FileText, Calendar, Clock } from 'lucide-react';
 
 export default function StudentDocumentsPage() {
