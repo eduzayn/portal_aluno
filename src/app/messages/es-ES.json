@@ -1,0 +1,208 @@
+{
+  "common": {
+    "actions": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "create": "Crear",
+      "view": "Ver",
+      "search": "Buscar",
+      "filter": "Filtrar",
+      "export": "Exportar",
+      "back": "Volver",
+      "next": "Siguiente",
+      "confirm": "Confirmar"
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "pending": "Pendiente",
+      "completed": "Completado",
+      "cancelled": "Cancelado",
+      "suspended": "Suspendido"
+    },
+    "validation": {
+      "required": "Este campo es obligatorio",
+      "email": "Correo electrónico inválido",
+      "minLength": "Debe tener al menos {length} caracteres",
+      "maxLength": "Debe tener como máximo {length} caracteres",
+      "passwordMatch": "Las contraseñas no coinciden",
+      "invalidDate": "Fecha inválida",
+      "invalidNumber": "Número inválido",
+      "invalidCPF": "CPF inválido",
+      "invalidCNPJ": "CNPJ inválido"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {page} de {total}",
+      "showing": "Mostrando {start} a {end} de {total} registros"
+    },
+    "language": {
+      "pt-BR": "Portugués (Brasil)",
+      "en-US": "Inglés (EE.UU.)",
+      "es-ES": "Español (España)"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Entrar",
+      "forgotPassword": "¿Olvidó su contraseña?",
+      "noAccount": "¿No tiene una cuenta?",
+      "register": "Regístrese"
+    },
+    "register": {
+      "title": "Registro",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "submit": "Registrarse",
+      "hasAccount": "¿Ya tiene una cuenta?",
+      "login": "Iniciar sesión"
+    },
+    "forgotPassword": {
+      "title": "Recuperar Contraseña",
+      "email": "Correo electrónico",
+      "submit": "Enviar",
+      "instructions": "Le enviaremos un enlace para restablecer su contraseña.",
+      "backToLogin": "Volver al inicio de sesión"
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "password": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Nueva Contraseña",
+      "submit": "Restablecer",
+      "success": "¡Contraseña restablecida con éxito!"
+    },
+    "errors": {
+      "invalidCredentials": "Credenciales inválidas",
+      "emailNotFound": "Correo electrónico no encontrado",
+      "emailInUse": "El correo electrónico ya está en uso",
+      "weakPassword": "La contraseña es demasiado débil",
+      "serverError": "Error del servidor, inténtelo de nuevo más tarde"
+    }
+  },
+  "student": {
+    "dashboard": {
+      "title": "Panel de Control",
+      "activeCourses": "Cursos Activos",
+      "completedCourses": "Cursos Completados",
+      "upcomingClasses": "Próximas Clases",
+      "assignments": "Tareas",
+      "grades": "Calificaciones",
+      "announcements": "Anuncios",
+      "quickActions": "Acciones Rápidas",
+      "recentActivity": "Actividad Reciente",
+      "statistics": "Estadísticas",
+      "courseProgress": "Progreso del Curso",
+      "attendanceRate": "Tasa de Asistencia"
+    },
+    "courses": {
+      "title": "Mis Cursos",
+      "search": "Buscar curso",
+      "filter": "Filtrar",
+      "noResults": "No se encontraron cursos",
+      "columns": {
+        "id": "ID",
+        "name": "Nombre",
+        "instructor": "Instructor",
+        "startDate": "Fecha de Inicio",
+        "endDate": "Fecha de Finalización",
+        "progress": "Progreso",
+        "status": "Estado",
+        "actions": "Acciones"
+      }
+    },
+    "courseDetails": {
+      "title": "Detalles del Curso",
+      "description": "Descripción",
+      "syllabus": "Programa",
+      "materials": "Materiales",
+      "assignments": "Tareas",
+      "discussions": "Discusiones",
+      "grades": "Calificaciones",
+      "announcements": "Anuncios",
+      "instructors": "Instructores"
+    },
+    "assignments": {
+      "title": "Tareas",
+      "upcoming": "Próximas",
+      "completed": "Completadas",
+      "late": "Atrasadas",
+      "dueDate": "Fecha de Entrega",
+      "status": "Estado",
+      "grade": "Calificación",
+      "submit": "Enviar",
+      "noAssignments": "No se encontraron tareas"
+    },
+    "grades": {
+      "title": "Calificaciones",
+      "course": "Curso",
+      "assignment": "Tarea",
+      "grade": "Calificación",
+      "feedback": "Retroalimentación",
+      "average": "Promedio",
+      "noGrades": "No se encontraron calificaciones"
+    },
+    "calendar": {
+      "title": "Calendario",
+      "today": "Hoy",
+      "month": "Mes",
+      "week": "Semana",
+      "day": "Día",
+      "events": "Eventos",
+      "classes": "Clases",
+      "assignments": "Tareas",
+      "exams": "Exámenes",
+      "noEvents": "No se encontraron eventos"
+    },
+    "profile": {
+      "title": "Perfil",
+      "personalInfo": "Información Personal",
+      "contactInfo": "Información de Contacto",
+      "academicInfo": "Información Académica",
+      "preferences": "Preferencias",
+      "changePassword": "Cambiar Contraseña",
+      "updateProfile": "Actualizar Perfil"
+    },
+    "messages": {
+      "title": "Mensajes",
+      "inbox": "Bandeja de Entrada",
+      "sent": "Enviados",
+      "drafts": "Borradores",
+      "compose": "Redactar",
+      "to": "Para",
+      "subject": "Asunto",
+      "message": "Mensaje",
+      "send": "Enviar",
+      "noMessages": "No se encontraron mensajes"
+    },
+    "certificates": {
+      "title": "Certificados",
+      "available": "Disponibles",
+      "pending": "Pendientes",
+      "download": "Descargar",
+      "share": "Compartir",
+      "verify": "Verificar",
+      "noCertificates": "No se encontraron certificados"
+    }
+  },
+  "sidebar": {
+    "dashboard": "Panel de Control",
+    "courses": "Mis Cursos",
+    "assignments": "Tareas",
+    "grades": "Calificaciones",
+    "calendar": "Calendario",
+    "messages": "Mensajes",
+    "certificates": "Certificados",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "support": "Soporte",
+    "logout": "Cerrar Sesión"
+  }
+}

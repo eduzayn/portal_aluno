@@ -1,0 +1,208 @@
+{
+  "common": {
+    "actions": {
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "create": "Criar",
+      "view": "Visualizar",
+      "search": "Buscar",
+      "filter": "Filtrar",
+      "export": "Exportar",
+      "back": "Voltar",
+      "next": "Próximo",
+      "confirm": "Confirmar"
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "pending": "Pendente",
+      "completed": "Concluído",
+      "cancelled": "Cancelado",
+      "suspended": "Suspenso"
+    },
+    "validation": {
+      "required": "Este campo é obrigatório",
+      "email": "Email inválido",
+      "minLength": "Deve ter pelo menos {length} caracteres",
+      "maxLength": "Deve ter no máximo {length} caracteres",
+      "passwordMatch": "As senhas não coincidem",
+      "invalidDate": "Data inválida",
+      "invalidNumber": "Número inválido",
+      "invalidCPF": "CPF inválido",
+      "invalidCNPJ": "CNPJ inválido"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próximo",
+      "page": "Página {page} de {total}",
+      "showing": "Mostrando {start} a {end} de {total} registros"
+    },
+    "language": {
+      "pt-BR": "Português (Brasil)",
+      "en-US": "Inglês (EUA)",
+      "es-ES": "Espanhol (Espanha)"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Senha",
+      "submit": "Entrar",
+      "forgotPassword": "Esqueceu a senha?",
+      "noAccount": "Não tem uma conta?",
+      "register": "Registre-se"
+    },
+    "register": {
+      "title": "Registro",
+      "name": "Nome",
+      "email": "Email",
+      "password": "Senha",
+      "confirmPassword": "Confirmar Senha",
+      "submit": "Registrar",
+      "hasAccount": "Já tem uma conta?",
+      "login": "Entrar"
+    },
+    "forgotPassword": {
+      "title": "Recuperar Senha",
+      "email": "Email",
+      "submit": "Enviar",
+      "instructions": "Enviaremos um link para redefinir sua senha.",
+      "backToLogin": "Voltar para o login"
+    },
+    "resetPassword": {
+      "title": "Redefinir Senha",
+      "password": "Nova Senha",
+      "confirmPassword": "Confirmar Nova Senha",
+      "submit": "Redefinir",
+      "success": "Senha redefinida com sucesso!"
+    },
+    "errors": {
+      "invalidCredentials": "Credenciais inválidas",
+      "emailNotFound": "Email não encontrado",
+      "emailInUse": "Email já está em uso",
+      "weakPassword": "Senha muito fraca",
+      "serverError": "Erro no servidor, tente novamente mais tarde"
+    }
+  },
+  "student": {
+    "dashboard": {
+      "title": "Dashboard",
+      "activeCourses": "Cursos Ativos",
+      "completedCourses": "Cursos Concluídos",
+      "upcomingClasses": "Próximas Aulas",
+      "assignments": "Tarefas",
+      "grades": "Notas",
+      "announcements": "Avisos",
+      "quickActions": "Ações Rápidas",
+      "recentActivity": "Atividade Recente",
+      "statistics": "Estatísticas",
+      "courseProgress": "Progresso do Curso",
+      "attendanceRate": "Taxa de Presença"
+    },
+    "courses": {
+      "title": "Meus Cursos",
+      "search": "Buscar curso",
+      "filter": "Filtrar",
+      "noResults": "Nenhum curso encontrado",
+      "columns": {
+        "id": "ID",
+        "name": "Nome",
+        "instructor": "Professor",
+        "startDate": "Data de Início",
+        "endDate": "Data de Término",
+        "progress": "Progresso",
+        "status": "Status",
+        "actions": "Ações"
+      }
+    },
+    "courseDetails": {
+      "title": "Detalhes do Curso",
+      "description": "Descrição",
+      "syllabus": "Ementa",
+      "materials": "Materiais",
+      "assignments": "Tarefas",
+      "discussions": "Discussões",
+      "grades": "Notas",
+      "announcements": "Avisos",
+      "instructors": "Professores"
+    },
+    "assignments": {
+      "title": "Tarefas",
+      "upcoming": "Próximas",
+      "completed": "Concluídas",
+      "late": "Atrasadas",
+      "dueDate": "Data de Entrega",
+      "status": "Status",
+      "grade": "Nota",
+      "submit": "Enviar",
+      "noAssignments": "Nenhuma tarefa encontrada"
+    },
+    "grades": {
+      "title": "Notas",
+      "course": "Curso",
+      "assignment": "Tarefa",
+      "grade": "Nota",
+      "feedback": "Feedback",
+      "average": "Média",
+      "noGrades": "Nenhuma nota encontrada"
+    },
+    "calendar": {
+      "title": "Calendário",
+      "today": "Hoje",
+      "month": "Mês",
+      "week": "Semana",
+      "day": "Dia",
+      "events": "Eventos",
+      "classes": "Aulas",
+      "assignments": "Tarefas",
+      "exams": "Provas",
+      "noEvents": "Nenhum evento encontrado"
+    },
+    "profile": {
+      "title": "Perfil",
+      "personalInfo": "Informações Pessoais",
+      "contactInfo": "Informações de Contato",
+      "academicInfo": "Informações Acadêmicas",
+      "preferences": "Preferências",
+      "changePassword": "Alterar Senha",
+      "updateProfile": "Atualizar Perfil"
+    },
+    "messages": {
+      "title": "Mensagens",
+      "inbox": "Caixa de Entrada",
+      "sent": "Enviados",
+      "drafts": "Rascunhos",
+      "compose": "Compor",
+      "to": "Para",
+      "subject": "Assunto",
+      "message": "Mensagem",
+      "send": "Enviar",
+      "noMessages": "Nenhuma mensagem encontrada"
+    },
+    "certificates": {
+      "title": "Certificados",
+      "available": "Disponíveis",
+      "pending": "Pendentes",
+      "download": "Baixar",
+      "share": "Compartilhar",
+      "verify": "Verificar",
+      "noCertificates": "Nenhum certificado encontrado"
+    }
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "courses": "Meus Cursos",
+    "assignments": "Tarefas",
+    "grades": "Notas",
+    "calendar": "Calendário",
+    "messages": "Mensagens",
+    "certificates": "Certificados",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "support": "Suporte",
+    "logout": "Sair"
+  }
+}
