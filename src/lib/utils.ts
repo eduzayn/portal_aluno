@@ -1,10 +1,13 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
  * Utilitário para combinar nomes de classes CSS
- * @param classes Classes CSS a serem combinadas
+ * @param inputs Classes CSS a serem combinadas
  * @returns String com as classes combinadas
  */
-export function cn(...classes: (string | boolean | undefined | null)[]): string {
-  return classes.filter(Boolean).join(' ');
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
 }
 
 /**
