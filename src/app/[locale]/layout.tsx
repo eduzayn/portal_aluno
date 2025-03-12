@@ -1,9 +1,13 @@
 import '../globals.css';
 import type { Metadata } from 'next';
 import { AuthProvider } from '../../contexts/AuthContext';
+import { ThemeProvider } from '../../components/providers/ThemeProvider';
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { locales } from '../i18n';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'Portal do Aluno - Edunéxia',
@@ -36,11 +40,13 @@ export default async function LocaleLayout({
   
   return (
     <html lang={params.locale}>
-      <body>
+      <body className={`${inter.variable} antialiased bg-neutral-50`}>
         <NextIntlClientProvider locale={params.locale} messages={messages}>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <ThemeProvider module="student">
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
