@@ -14,11 +14,11 @@ export const getAccessibilityTranslation = async (
 ): Promise<string> => {
   try {
     // Dynamic import of locale file
-    const module = await import(`../app/messages/accessibility/${locale}.json`);
+    const localeModule = await import(`../app/messages/accessibility/${locale}.json`);
     
     // Split the key path and traverse the object
     const keys = key.split('.');
-    let value: any = module;
+    let value: any = localeModule;
     
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {

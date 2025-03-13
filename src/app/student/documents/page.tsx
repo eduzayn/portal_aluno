@@ -1,52 +1,83 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { getAcademicDocuments } from '@/components/student/mock-data';
-import { AcademicDocument } from '@/components/student/types';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
+import { useAuth } from '../../../contexts/AuthContext';
+import { getAcademicDocuments } from '../../../components/student/supabase-data';
+import { AcademicDocument } from '../../../components/student/types';
+import { useRouter } from 'next/navigation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs';
 import { Download, Printer, FileText, Calendar, Clock } from 'lucide-react';
 
-export default function StudentDocumentsPage() {
+export default function DocumentsPage() {
   const { user } = useAuth();
   const [documents, setDocuments] = useState<AcademicDocument[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [filteredDocuments, setFilteredDocuments] = useState<AcademicDocument[]>([]);
   const [activeTab, setActiveTab] = useState<string>('all');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      if (user) {
-        try {
-          const docs = await getAcademicDocuments(user.id);
-          setDocuments(docs);
-        } catch (error) {
-          console.error('Erro ao buscar documentos:', error);
-        } finally {
-          setLoading(false);
-        }
+    async function loadDocuments() {
+      if (!user || !user.id) {
+        // Mostrar estado de carregamento em vez de redirecionar imediatamente
+        setLoading(true);
+        return;
       }
-    };
 
-    fetchDocuments();
+      try {
+        setLoading(true);
+        const docs = await getAcademicDocuments(user.id);
+        setDocuments(docs);
+        setFilteredDocuments(docs);
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar documentos:', error);
+        setError('Não foi possível carregar seus documentos. Tente novamente mais tarde.');
+        setLoading(false);
+      }
+    }
+    
+    loadDocuments();
   }, [user]);
 
-  const handleDownload = (fileUrl: string, title: string) => {
-    // Em um ambiente real, isso seria um link para download do arquivo
-    // Para o mock, apenas simular o download
-    alert(`Download iniciado: ${title}`);
-  };
-
-  const handlePrint = (fileUrl: string, title: string) => {
-    // Em um ambiente real, isso abriria o documento para impressão
-    // Para o mock, apenas simular a impressão
-    alert(`Preparando impressão: ${title}`);
-  };
-
-  const getDocumentsByType = (type: string) => {
-    if (type === 'all') {
-      return documents;
+  useEffect(() => {
+    if (activeTab === 'all') {
+      setFilteredDocuments(documents);
+    } else {
+      setFilteredDocuments(documents.filter(doc => doc.documentType === activeTab));
     }
-    return documents.filter(doc => doc.documentType === type);
+  }, [activeTab, documents]);
+
+  const handleDownloadDocument = (fileUrl: string, title: string) => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = `${title.replace(/\s+/g, '_')}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handlePrintDocument = (fileUrl: string) => {
+    const printWindow = window.open(fileUrl, '_blank');
+    if (printWindow) {
+      printWindow.addEventListener('load', () => {
+        printWindow.print();
+      });
+    }
+  };
+
+  const getDocumentTypeLabel = (type: string) => {
+    switch (type) {
+      case 'grade_history':
+        return 'Histórico de Notas';
+      case 'enrollment_declaration':
+        return 'Declaração de Matrícula';
+      case 'course_completion':
+        return 'Declaração de Conclusão';
+      default:
+        return 'Documento';
+    }
   };
 
   if (loading) {
@@ -61,7 +92,13 @@ export default function StudentDocumentsPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6 text-indigo-700">Documentos Acadêmicos</h1>
       
-      <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+          <p className="text-red-800">{error}</p>
+        </div>
+      )}
+      
+      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-6 bg-gray-100 p-1 rounded-lg">
           <TabsTrigger value="all" className="rounded-md data-[state=active]:bg-white data-[state=active]:text-indigo-700">
             Todos
@@ -79,17 +116,22 @@ export default function StudentDocumentsPage() {
         
         {['all', 'enrollment_declaration', 'grade_history', 'course_completion'].map(tabValue => (
           <TabsContent key={tabValue} value={tabValue} className="space-y-4">
-            {getDocumentsByType(tabValue).length === 0 ? (
+            {filteredDocuments.length === 0 ? (
               <div className="text-center py-8 bg-gray-50 rounded-lg">
                 <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-gray-500">Nenhum documento disponível nesta categoria</p>
+                <p className="mt-2 text-gray-500">
+                  {activeTab === 'all' 
+                    ? 'Você ainda não possui documentos acadêmicos.' 
+                    : `Você ainda não possui documentos do tipo ${getDocumentTypeLabel(activeTab)}.`}
+                </p>
               </div>
             ) : (
-              getDocumentsByType(tabValue).map(document => (
+              filteredDocuments.map(document => (
                 <div key={document.id} className="bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:border-indigo-300 transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div className="flex-1">
                       <h3 className="text-lg font-medium text-gray-900">{document.title}</h3>
+                      <p className="text-sm text-gray-500">{getDocumentTypeLabel(document.documentType)}</p>
                       
                       <div className="mt-2 flex flex-wrap gap-2 text-sm text-gray-500">
                         <div className="flex items-center">
@@ -126,7 +168,7 @@ export default function StudentDocumentsPage() {
                     
                     <div className="flex mt-4 md:mt-0 space-x-2">
                       <button
-                        onClick={() => handleDownload(document.fileUrl || '', document.title)}
+                        onClick={() => handleDownloadDocument(document.fileUrl || '', document.title)}
                         className="flex items-center px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
                       >
                         <Download className="w-4 h-4 mr-1" />
@@ -134,7 +176,7 @@ export default function StudentDocumentsPage() {
                       </button>
                       
                       <button
-                        onClick={() => handlePrint(document.fileUrl || '', document.title)}
+                        onClick={() => handlePrintDocument(document.fileUrl || '')}
                         className="flex items-center px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
                       >
                         <Printer className="w-4 h-4 mr-1" />

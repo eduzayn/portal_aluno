@@ -74,6 +74,7 @@ export const studentNavItems: RouteItem[] = [
     name: 'Documentos',
     icon: React.createElement(FileText, { size: 20 })
   },
+  // Removed duplicate entries for Credencial and Documentos
   {
     path: studentRoutes.certificates,
     name: 'Certificados',

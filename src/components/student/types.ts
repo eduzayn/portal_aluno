@@ -12,6 +12,7 @@ export interface Student {
   certificatesEarned?: number;
   currentProgress?: number;
   hasValidCredential?: boolean;
+  academicDocuments?: AcademicDocument[];
 }
 
 export interface Course {
@@ -22,7 +23,7 @@ export interface Course {
   duration: string;
   progress: number;
   thumbnail: string;
-  status: 'not-started' | 'in-progress' | 'completed';
+  status: 'not-started' | 'in-progress' | 'completed' | 'not_started' | 'in_progress';
   startDate: string;
   endDate: string;
   category: string;
@@ -30,6 +31,7 @@ export interface Course {
   rating: number;
   enrollmentDate: string;
   lastAccessed: string | null;
+  modules?: Module[];
 }
 
 export interface Certificate {
@@ -38,6 +40,7 @@ export interface Certificate {
   courseName: string;
   issueDate: string;
   downloadUrl: string;
+  title?: string;
 }
 
 export interface StudentCredential {
@@ -57,6 +60,7 @@ export interface AcademicDocument {
   title: string;
   fileUrl: string | null;
   issueDate: string;
+  expiryDate?: string;
   metadata: {
     semester?: string;
     courses?: string[];
@@ -75,4 +79,29 @@ export interface FinancialRecord {
   paymentDate: Date | null;
   status: 'paid' | 'pending' | 'overdue';
   receiptUrl: string | null;
+}
+
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  modules: Module[];
+}
+
+export interface Module {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  status: 'completed' | 'in_progress' | 'not_started' | 'locked';
+  lessons: Lesson[];
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  type: 'video' | 'reading' | 'quiz' | 'assignment';
+  status: 'completed' | 'in_progress' | 'not_started' | 'locked' | 'available';
 }

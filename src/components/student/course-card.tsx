@@ -12,7 +12,10 @@ interface CourseCardProps {
 
 export function CourseCard({ course, onContinue }: CourseCardProps) {
   const getStatusBadge = () => {
-    switch (course.status) {
+    // Normalize status to handle both formats (with hyphen or underscore)
+    const normalizedStatus = course.status.replace('-', '_');
+    
+    switch (normalizedStatus) {
       case 'not_started':
         return <span className="text-sm px-2 py-1 rounded-full bg-gray-100 text-gray-600">Não iniciado</span>
       case 'in_progress':
@@ -25,20 +28,20 @@ export function CourseCard({ course, onContinue }: CourseCardProps) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden transition-all hover:shadow-lg gradient-card-hover">
-      <div className="h-2 md:h-3 gradient-blue-pink w-full"></div>
+    <div className="border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 hover:shadow-lg gradient-card-hover">
+      <div className="h-3 gradient-blue-pink w-full"></div>
       <div className="p-4 md:p-6">
-        <div className="flex justify-between items-start mb-1 md:mb-2">
-          <h3 className="text-base md:text-lg font-bold">{course.title}</h3>
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-lg font-semibold text-gray-800">{course.title}</h3>
           {getStatusBadge()}
         </div>
-        <p className="text-xs md:text-sm text-gray-600 mb-3 md:mb-4 line-clamp-2">{course.description}</p>
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
         
         <div className="mb-3 md:mb-4">
           <p className="text-xs md:text-sm text-gray-600">Progresso: {course.progress}%</p>
           <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
             <div 
-              className="gradient-blue-pink h-2.5 rounded-full" 
+              className="gradient-blue-pink h-2.5 rounded-full"
               style={{ width: `${course.progress}%` }}
             ></div>
           </div>
@@ -59,8 +62,8 @@ export function CourseCard({ course, onContinue }: CourseCardProps) {
           onClick={() => onContinue(course.id)} 
           className={course.status === 'completed' ? 'btn-outline w-full' : 'btn-primary w-full'}
         >
-          {course.status === 'not_started' ? 'Iniciar' : 
-           course.status === 'in_progress' ? 'Continuar' : 'Revisar'}
+          {course.status.includes('not') ? 'Iniciar' :
+           course.status.includes('progress') ? 'Continuar' : 'Revisar'}
         </button>
       </div>
     </div>
