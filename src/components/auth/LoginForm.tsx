@@ -26,7 +26,8 @@ export default function LoginForm() {
       
       if (result.success) {
         console.log('Login successful, redirecting to dashboard...');
-        // The router.push is now handled in the AuthContext login function
+        // Explicitly redirect to dashboard
+        router.push('/student/dashboard');
       } else {
         console.error('Login failed:', result.error);
         setError(result.error || 'Falha ao fazer login');

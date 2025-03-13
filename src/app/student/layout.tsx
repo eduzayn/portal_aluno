@@ -43,7 +43,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                   : 'text-gray-700'
               }`}
             >
-              <item.icon className="h-5 w-5" />
+              <span className="icon">{item.icon}</span>
               <span>{item.name}</span>
             </Link>
           ))}
@@ -115,7 +115,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                   }`}
                   onClick={toggleSidebar}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <span className="icon">{item.icon}</span>
                   <span>{item.name}</span>
                 </Link>
               ))}
