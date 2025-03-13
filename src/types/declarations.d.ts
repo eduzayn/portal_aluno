@@ -6,7 +6,15 @@ declare module '@edunexia/core' {
 }
 
 declare module 'swagger-jsdoc';
-declare module 'swagger-ui-react';
+declare module 'swagger-ui-react' {
+  interface SwaggerUIProps {
+    spec?: object;
+    url?: string;
+    [key: string]: any;
+  }
+  const SwaggerUI: React.FC<SwaggerUIProps>;
+  export default SwaggerUI;
+};
 declare module 'qrcode.react';
 declare module 'jspdf';
 declare module 'html2canvas';
