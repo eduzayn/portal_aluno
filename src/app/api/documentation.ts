@@ -1,4 +1,24 @@
-import { createOpenAPIConfig } from '@edunexia/core';
+// Mock implementation for @edunexia/core
+const createOpenAPIConfig = (config: any) => {
+  return {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: config.title,
+        description: config.description,
+        version: config.version,
+      },
+      servers: [
+        {
+          url: '/api',
+          description: 'API Server',
+        },
+      ],
+    },
+    apis: config.apis,
+  };
+};
+
 import swaggerJsdoc from 'swagger-jsdoc';
 import path from 'path';
 
