@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getStudentCourses } from '../../../components/student/mock-data'
+import { getCourses as getStudentCourses } from '../../../components/student/mock-data'
 import { Course } from '../../../components/student/types'
 import { CourseCard } from '../../../components/student/course-card'
 

@@ -22,7 +22,7 @@ export interface Course {
   duration: string;
   progress: number;
   thumbnail: string;
-  status: 'not-started' | 'in-progress' | 'completed';
+  status: 'not-started' | 'in-progress' | 'completed' | 'not_started' | 'in_progress';
   startDate: string;
   endDate: string;
   category: string;

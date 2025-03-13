@@ -107,7 +107,7 @@ export default function StudentDashboardPage() {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {courses
-            .filter(course => course.status === 'in_progress')
+            .filter(course => course.status.includes('progress'))
             .slice(0, 3)
             .map(course => (
               <CourseCard 
@@ -117,7 +117,7 @@ export default function StudentDashboardPage() {
               />
             ))}
           
-          {courses.filter(course => course.status === 'in_progress').length === 0 && (
+          {courses.filter(course => course.status.includes('progress')).length === 0 && (
             <div className="col-span-3 rounded-lg border border-dashed p-8 text-center">
               <p className="text-gray-600">Você não tem cursos em andamento.</p>
               <button 

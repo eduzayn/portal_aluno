@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 
 // Mock Next.js navigation
-export const mockRouter = {
+const mockRouterImpl = {
   push: jest.fn(),
   replace: jest.fn(),
   back: jest.fn(),
@@ -12,7 +12,7 @@ export const mockRouter = {
 }
 
 // Export the mock router for tests to access
-export { mockRouter }
+export const mockRouter = mockRouterImpl
 
 // Mock Next.js navigation module
 jest.mock('next/navigation', () => ({

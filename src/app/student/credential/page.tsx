@@ -169,11 +169,12 @@ export default function StudentCredentialPage() {
   const handleDownloadPDF = async () => {
     if (credentialRef.current) {
       try {
-        const { jsPDF } = await import('jspdf');
+        const jsPDFModule = await import('jspdf');
+        const jsPDF = jsPDFModule.default;
         const html2canvas = await import('html2canvas');
         
         const element = credentialRef.current;
-        const canvas = await html2canvas.default(element, { scale: 2 });
+        const canvas = await html2canvas.default(element);
         const imgData = canvas.toDataURL('image/png');
         
         const pdf = new jsPDF({

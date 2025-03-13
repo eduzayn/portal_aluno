@@ -12,7 +12,10 @@ interface CourseCardProps {
 
 export function CourseCard({ course, onContinue }: CourseCardProps) {
   const getStatusBadge = () => {
-    switch (course.status) {
+    // Normalize status to handle both formats (with hyphen or underscore)
+    const normalizedStatus = course.status.replace('-', '_');
+    
+    switch (normalizedStatus) {
       case 'not_started':
         return <span className="text-sm px-2 py-1 rounded-full bg-gray-100 text-gray-600">Não iniciado</span>
       case 'in_progress':
@@ -59,8 +62,8 @@ export function CourseCard({ course, onContinue }: CourseCardProps) {
           onClick={() => onContinue(course.id)} 
           className={course.status === 'completed' ? 'btn-outline w-full' : 'btn-primary w-full'}
         >
-          {course.status === 'not_started' ? 'Iniciar' : 
-           course.status === 'in_progress' ? 'Continuar' : 'Revisar'}
+          {course.status.includes('not') ? 'Iniciar' :
+           course.status.includes('progress') ? 'Continuar' : 'Revisar'}
         </button>
       </div>
     </div>
