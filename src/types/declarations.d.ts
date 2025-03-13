@@ -14,10 +14,10 @@ declare module 'html2canvas';
 // Declare modules for local imports that TypeScript can't find
 declare module '../../components/ui/ServerErrorHandler';
 declare module '../../styles/colors' {
-  export const colors: Record<string, string>;
+  export const colors: Record<string, Record<string, string>>;
 }
 declare module './colors' {
-  export const colors: Record<string, string>;
+  export const colors: Record<string, Record<string, string>>;
 }
 declare module './utils' {
   export function cn(...inputs: any[]): string;

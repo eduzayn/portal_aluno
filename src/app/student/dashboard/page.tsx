@@ -142,7 +142,7 @@ export default function StudentDashboardPage() {
               </div>
               <div>
                 <p className="font-medium">Aula concluída</p>
-                <p className="text-sm text-gray-600">Você concluiu a aula "Introdução ao JavaScript" do curso Desenvolvimento Web</p>
+                <p className="text-sm text-gray-600">Você concluiu a aula &quot;Introdução ao JavaScript&quot; do curso Desenvolvimento Web</p>
                 <p className="text-xs text-gray-600 mt-1">Hoje, 10:30</p>
               </div>
             </div>
@@ -153,7 +153,7 @@ export default function StudentDashboardPage() {
               </div>
               <div>
                 <p className="font-medium">Nota atribuída</p>
-                <p className="text-sm text-gray-600">Você recebeu nota 9.5/10 no exercício "Estruturas de Dados" do curso Introdução à Programação</p>
+                <p className="text-sm text-gray-600">Você recebeu nota 9.5/10 no exercício &quot;Estruturas de Dados&quot; do curso Introdução à Programação</p>
                 <p className="text-xs text-gray-600 mt-1">Ontem, 15:45</p>
               </div>
             </div>
