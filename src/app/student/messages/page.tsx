@@ -17,13 +17,6 @@ interface Message {
   content: string;
   date: string;
   read: boolean;
-  attachments?: {
-    id: string;
-    name: string;
-    url: string;
-    size: number;
-    type: string;
-  }[];
 }
 
 // Mock data function - would be replaced with actual API call
@@ -34,13 +27,13 @@ const getStudentMessages = async (userId: string): Promise<Message[]> => {
   return [
     {
       id: '1',
-      senderId: 'inst-1',
-      senderName: 'Prof. Carlos Mendes',
+      senderId: 'instructor-1',
+      senderName: 'Prof. Carlos Silva',
       senderRole: 'instructor',
-      senderAvatar: '/images/avatars/instructor-1.png',
+      senderAvatar: 'https://randomuser.me/api/portraits/men/32.jpg',
       recipientId: userId,
-      subject: 'Feedback sobre seu projeto JavaScript',
-      content: 'Olá! Acabei de revisar seu projeto de JavaScript e gostaria de compartilhar algumas observações. Seu código está bem estruturado, mas há algumas melhorias que podem ser feitas em relação à organização das funções. Vamos discutir isso na próxima aula?',
+      subject: 'Feedback sobre seu projeto final',
+      content: 'Olá! Acabei de revisar seu projeto final e gostaria de compartilhar algumas observações. No geral, seu trabalho está muito bom, mas há alguns pontos que poderiam ser melhorados. Podemos agendar uma reunião para discutir em detalhes?',
       date: '2025-03-12T14:30:00',
       read: false
     },
@@ -49,95 +42,59 @@ const getStudentMessages = async (userId: string): Promise<Message[]> => {
       senderId: 'admin-1',
       senderName: 'Secretaria Acadêmica',
       senderRole: 'admin',
-      senderAvatar: '/images/avatars/admin-1.png',
+      senderAvatar: 'https://randomuser.me/api/portraits/women/68.jpg',
       recipientId: userId,
       subject: 'Confirmação de matrícula',
-      content: 'Prezado(a) aluno(a), sua matrícula para o próximo semestre foi confirmada com sucesso. Todos os documentos foram processados e validados. Caso tenha alguma dúvida, entre em contato com a secretaria acadêmica.',
+      content: 'Informamos que sua matrícula para o próximo semestre foi confirmada com sucesso. Todos os documentos foram processados e validados. Caso tenha alguma dúvida, entre em contato com a secretaria acadêmica.',
       date: '2025-03-10T09:15:00',
       read: true
     },
     {
       id: '3',
-      senderId: 'inst-2',
-      senderName: 'Profa. Ana Souza',
+      senderId: 'instructor-2',
+      senderName: 'Profa. Ana Martins',
       senderRole: 'instructor',
-      senderAvatar: '/images/avatars/instructor-2.png',
+      senderAvatar: 'https://randomuser.me/api/portraits/women/45.jpg',
       recipientId: userId,
-      subject: 'Material adicional - React Hooks',
-      content: 'Olá! Conforme solicitado na aula de hoje, estou enviando o material adicional sobre React Hooks. Também incluí alguns exercícios práticos que podem ajudar a fixar o conteúdo. Qualquer dúvida, estou à disposição.',
+      subject: 'Material complementar',
+      content: 'Compartilho com você alguns materiais complementares que podem ajudar na compreensão do conteúdo abordado na última aula. Estes recursos incluem artigos científicos e vídeos explicativos. Bons estudos!',
       date: '2025-03-08T16:45:00',
-      read: false,
-      attachments: [
-        {
-          id: 'att-1',
-          name: 'react-hooks-material.pdf',
-          url: '/files/react-hooks-material.pdf',
-          size: 2048576, // 2MB
-          type: 'application/pdf'
-        },
-        {
-          id: 'att-2',
-          name: 'exercicios-hooks.zip',
-          url: '/files/exercicios-hooks.zip',
-          size: 1048576, // 1MB
-          type: 'application/zip'
-        }
-      ]
-    },
-    {
-      id: '4',
-      senderId: 'admin-2',
-      senderName: 'Suporte Técnico',
-      senderRole: 'admin',
-      senderAvatar: '/images/avatars/admin-2.png',
-      recipientId: userId,
-      subject: 'Manutenção programada',
-      content: 'Informamos que no próximo domingo, dia 20/03, o sistema ficará indisponível das 02:00 às 04:00 para manutenção programada. Pedimos desculpas pelo inconveniente.',
-      date: '2025-03-05T11:20:00',
       read: true
     },
     {
-      id: '5',
-      senderId: 'inst-3',
-      senderName: 'Prof. Roberto Alves',
+      id: '4',
+      senderId: 'instructor-3',
+      senderName: 'Prof. Roberto Almeida',
       senderRole: 'instructor',
-      senderAvatar: '/images/avatars/instructor-3.png',
+      senderAvatar: 'https://randomuser.me/api/portraits/men/67.jpg',
       recipientId: userId,
-      subject: 'Próxima aula - Node.js e Express',
-      content: 'Olá! Na próxima aula, vamos iniciar o módulo de Node.js e Express. Por favor, prepare o ambiente de desenvolvimento conforme as instruções no link abaixo. Será importante ter tudo configurado para acompanhar os exercícios práticos.',
-      date: '2025-03-03T13:10:00',
+      subject: 'Alteração na data da prova',
+      content: 'Informo que a data da prova foi alterada do dia 20/03 para o dia 25/03 devido a ajustes no calendário acadêmico. Por favor, atualize sua agenda. Qualquer dúvida, estou à disposição.',
+      date: '2025-03-07T11:20:00',
+      read: false
+    },
+    {
+      id: '5',
+      senderId: 'admin-2',
+      senderName: 'Suporte Técnico',
+      senderRole: 'admin',
+      senderAvatar: 'https://randomuser.me/api/portraits/men/22.jpg',
+      recipientId: userId,
+      subject: 'Manutenção programada',
+      content: 'Informamos que haverá uma manutenção programada no sistema no próximo domingo, das 00h às 04h. Durante este período, o portal estará indisponível. Pedimos desculpas pelo inconveniente.',
+      date: '2025-03-05T13:30:00',
       read: true
     }
   ];
 };
 
 // Function to mark message as read
-const markAsRead = async (messageId: string): Promise<boolean> => {
+const markMessageAsRead = async (messageId: string): Promise<boolean> => {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
   // In a real app, this would update the database
   return true;
-};
-
-// Function to send a new message
-const sendMessage = async (message: Partial<Message>): Promise<Message | null> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // In a real app, this would save to the database
-  return {
-    id: `new-${Date.now()}`,
-    senderId: message.senderId || '',
-    senderName: message.senderName || '',
-    senderRole: message.senderRole || 'student',
-    senderAvatar: message.senderAvatar || '',
-    recipientId: message.recipientId || '',
-    subject: message.subject || '',
-    content: message.content || '',
-    date: new Date().toISOString(),
-    read: false
-  };
 };
 
 export default function MessagesPage() {
@@ -147,17 +104,11 @@ export default function MessagesPage() {
   const [filteredMessages, setFilteredMessages] = useState<Message[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('all');
-  const [replyTo, setReplyTo] = useState<Message | null>(null);
-  const [newMessage, setNewMessage] = useState({
-    subject: '',
-    content: '',
-    recipientId: ''
-  });
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
   useEffect(() => {
     async function loadMessages() {
       if (!user || !user.id) {
-        // Mostrar estado de carregamento em vez de redirecionar imediatamente
         setLoading(true);
         return;
       }
@@ -183,65 +134,58 @@ export default function MessagesPage() {
       setFilteredMessages(messages);
     } else if (activeTab === 'unread') {
       setFilteredMessages(messages.filter(msg => !msg.read));
-    } else if (activeTab === 'sent') {
-      // In a real app, this would filter messages sent by the user
-      setFilteredMessages([]);
+    } else if (activeTab === 'read') {
+      setFilteredMessages(messages.filter(msg => msg.read));
     }
   }, [activeTab, messages]);
 
   const handleMarkAsRead = async (id: string) => {
     try {
-      const success = await markAsRead(id);
+      const success = await markMessageAsRead(id);
       if (success) {
         setMessages(messages.map(msg => 
           msg.id === id ? { ...msg, read: true } : msg
         ));
+        
+        if (selectedMessage && selectedMessage.id === id) {
+          setSelectedMessage({ ...selectedMessage, read: true });
+        }
       }
     } catch (error) {
       console.error('Erro ao marcar mensagem como lida:', error);
     }
   };
 
-  const handleReply = (message: Message) => {
-    setReplyTo(message);
-    setNewMessage({
-      subject: `Re: ${message.subject}`,
-      content: '',
-      recipientId: message.senderId
-    });
+  const handleSelectMessage = (message: Message) => {
+    setSelectedMessage(message);
+    if (!message.read) {
+      handleMarkAsRead(message.id);
+    }
   };
 
-  const handleSendMessage = async () => {
-    if (!user || !newMessage.subject || !newMessage.content || !newMessage.recipientId) {
-      return;
+  const handleBackToList = () => {
+    setSelectedMessage(null);
+  };
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'instructor':
+        return 'bg-blue-100 text-blue-800';
+      case 'admin':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
+  };
 
-    try {
-      const sentMessage = await sendMessage({
-        senderId: user.id,
-        senderName: user.name || 'Aluno',
-        senderRole: 'student',
-        senderAvatar: '/images/avatars/default.png', // User profile doesn't have avatar property
-        recipientId: newMessage.recipientId,
-        subject: newMessage.subject,
-        content: newMessage.content
-      });
-
-      if (sentMessage) {
-        // Reset form
-        setNewMessage({
-          subject: '',
-          content: '',
-          recipientId: ''
-        });
-        setReplyTo(null);
-        
-        // Show success message or update UI
-        alert('Mensagem enviada com sucesso!');
-      }
-    } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
-      alert('Não foi possível enviar a mensagem. Tente novamente mais tarde.');
+  const getRoleName = (role: string) => {
+    switch (role) {
+      case 'instructor':
+        return 'Professor';
+      case 'admin':
+        return 'Administrador';
+      default:
+        return 'Estudante';
     }
   };
 
@@ -273,153 +217,124 @@ export default function MessagesPage() {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Mensagens</h1>
-        <Badge variant="outline">{unreadCount} não lidas</Badge>
+        {!selectedMessage && (
+          <Badge variant="outline">{unreadCount} não lidas</Badge>
+        )}
       </div>
       
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="all" onClick={() => setActiveTab('all')}>Todas</TabsTrigger>
-          <TabsTrigger value="unread" onClick={() => setActiveTab('unread')}>Não lidas</TabsTrigger>
-          <TabsTrigger value="sent" onClick={() => setActiveTab('sent')}>Enviadas</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value={activeTab}>
-          {replyTo && (
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Responder: {replyTo.subject}</CardTitle>
-                <CardDescription>Para: {replyTo.senderName}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Assunto</label>
-                    <input
-                      type="text"
-                      value={newMessage.subject}
-                      onChange={(e) => setNewMessage({...newMessage, subject: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Mensagem</label>
-                    <textarea
-                      value={newMessage.content}
-                      onChange={(e) => setNewMessage({...newMessage, content: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-md h-32"
-                    />
-                  </div>
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => setReplyTo(null)}
-                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={handleSendMessage}
-                      className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                      disabled={!newMessage.content}
-                    >
-                      Enviar
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+      {selectedMessage ? (
+        <div>
+          <button 
+            onClick={handleBackToList}
+            className="mb-4 flex items-center text-indigo-600 hover:text-indigo-800"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Voltar para lista
+          </button>
           
-          <div className="space-y-4">
-            {filteredMessages.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">Nenhuma mensagem encontrada.</p>
+          <Card>
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-xl">{selectedMessage.subject}</CardTitle>
+                  <CardDescription className="mt-1">
+                    <div className="flex items-center">
+                      <img 
+                        src={selectedMessage.senderAvatar} 
+                        alt={selectedMessage.senderName} 
+                        className="h-6 w-6 rounded-full mr-2"
+                      />
+                      <span className="font-medium">{selectedMessage.senderName}</span>
+                      <span className={`ml-2 text-xs px-2 py-1 rounded-full ${getRoleColor(selectedMessage.senderRole)}`}>
+                        {getRoleName(selectedMessage.senderRole)}
+                      </span>
+                    </div>
+                    <div className="text-xs mt-1">
+                      {new Date(selectedMessage.date).toLocaleString()}
+                    </div>
+                  </CardDescription>
+                </div>
               </div>
-            ) : (
-              filteredMessages.map(message => (
-                <Card 
-                  key={message.id} 
-                  className={`${!message.read ? 'bg-gray-50 border-l-4 border-l-indigo-500' : ''}`}
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-gray-200 mr-3 flex-shrink-0">
-                          {message.senderAvatar ? (
-                            <img 
-                              src={message.senderAvatar} 
-                              alt={message.senderName} 
-                              className="w-full h-full rounded-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-500">
-                              {message.senderName.charAt(0)}
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <CardTitle className="text-lg">{message.subject}</CardTitle>
-                          <CardDescription className="text-sm">
-                            De: {message.senderName} • {new Date(message.date).toLocaleString()}
-                          </CardDescription>
-                        </div>
-                      </div>
-                      {!message.read && (
-                        <button 
-                          onClick={() => handleMarkAsRead(message.id)}
-                          className="text-xs text-gray-500 hover:text-gray-700"
-                        >
-                          Marcar como lida
-                        </button>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm mb-4 whitespace-pre-line">{message.content}</p>
-                    
-                    {message.attachments && message.attachments.length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="text-sm font-medium mb-2">Anexos:</h4>
-                        <div className="space-y-2">
-                          {message.attachments.map(attachment => (
-                            <div key={attachment.id} className="flex items-center p-2 bg-gray-50 rounded-md">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                              </svg>
-                              <div className="flex-1">
-                                <p className="text-sm font-medium">{attachment.name}</p>
-                                <p className="text-xs text-gray-500">{(attachment.size / 1024).toFixed(0)} KB</p>
+            </CardHeader>
+            <CardContent>
+              <div className="prose max-w-none">
+                <p className="whitespace-pre-line">{selectedMessage.content}</p>
+              </div>
+              
+              <div className="mt-8 pt-4 border-t border-gray-200">
+                <h3 className="text-lg font-medium mb-2">Responder</h3>
+                <textarea 
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  rows={4}
+                  placeholder="Escreva sua resposta aqui..."
+                ></textarea>
+                <div className="mt-2 flex justify-end">
+                  <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Enviar resposta
+                  </button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        <>
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="all" onClick={() => setActiveTab('all')}>Todas</TabsTrigger>
+              <TabsTrigger value="unread" onClick={() => setActiveTab('unread')}>Não lidas</TabsTrigger>
+              <TabsTrigger value="read" onClick={() => setActiveTab('read')}>Lidas</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={activeTab}>
+              <div className="space-y-4">
+                {filteredMessages.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">Nenhuma mensagem encontrada.</p>
+                  </div>
+                ) : (
+                  filteredMessages.map(message => (
+                    <Card 
+                      key={message.id} 
+                      className={`cursor-pointer hover:shadow-md transition-shadow ${!message.read ? 'bg-gray-50 border-l-4 border-l-indigo-500' : ''}`}
+                      onClick={() => handleSelectMessage(message)}
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className={`text-lg ${!message.read ? 'font-bold' : ''}`}>{message.subject}</CardTitle>
+                            <CardDescription className="mt-1">
+                              <div className="flex items-center">
+                                <img 
+                                  src={message.senderAvatar} 
+                                  alt={message.senderName} 
+                                  className="h-6 w-6 rounded-full mr-2"
+                                />
+                                <span className="font-medium">{message.senderName}</span>
+                                <span className={`ml-2 text-xs px-2 py-1 rounded-full ${getRoleColor(message.senderRole)}`}>
+                                  {getRoleName(message.senderRole)}
+                                </span>
                               </div>
-                              <a 
-                                href={attachment.url} 
-                                download
-                                className="text-indigo-600 hover:text-indigo-800 text-sm"
-                              >
-                                Baixar
-                              </a>
-                            </div>
-                          ))}
+                            </CardDescription>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(message.date).toLocaleString()}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                    
-                    <div className="mt-4 flex justify-end">
-                      <button
-                        onClick={() => handleReply(message)}
-                        className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                        </svg>
-                        Responder
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-gray-600 line-clamp-2">{message.content}</p>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </>
+      )}
     </div>
   );
 }
