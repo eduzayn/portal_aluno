@@ -12,6 +12,7 @@ export interface Student {
   certificatesEarned?: number;
   currentProgress?: number;
   hasValidCredential?: boolean;
+  academicDocuments?: AcademicDocument[];
 }
 
 export interface Course {
@@ -101,5 +102,5 @@ export interface Lesson {
   description: string;
   duration: string;
   type: 'video' | 'reading' | 'quiz' | 'assignment';
-  status: 'completed' | 'in_progress' | 'not_started' | 'locked';
+  status: 'completed' | 'in_progress' | 'not_started' | 'locked' | 'available';
 }

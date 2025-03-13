@@ -1,136 +1,146 @@
--- Tabela para armazenar credenciais de estudantes
-CREATE TABLE IF NOT EXISTS student_credentials (
+-- Create student_credentials table
+CREATE TABLE IF NOT EXISTS public.student_credentials (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   student_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   photo_url TEXT,
   qr_code_data TEXT NOT NULL UNIQUE,
-  issue_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  issue_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   expiry_date TIMESTAMP WITH TIME ZONE,
-  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'expired', 'revoked')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'revoked')),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
--- Índice para busca rápida por QR code
-CREATE INDEX IF NOT EXISTS idx_student_credentials_qr_code ON student_credentials(qr_code_data);
-
--- Índice para busca por estudante
-CREATE INDEX IF NOT EXISTS idx_student_credentials_student_id ON student_credentials(student_id);
-
--- Tabela para armazenar documentos acadêmicos
-CREATE TABLE IF NOT EXISTS academic_documents (
+-- Create academic_documents table
+CREATE TABLE IF NOT EXISTS public.academic_documents (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   student_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  document_type TEXT NOT NULL CHECK (document_type IN ('enrollment_declaration', 'grade_history', 'course_completion')),
+  document_type TEXT NOT NULL CHECK (document_type IN ('grade_history', 'enrollment_declaration', 'course_completion')),
   title TEXT NOT NULL,
-  file_url TEXT,
-  issue_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  file_url TEXT NOT NULL,
+  issue_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  expiry_date TIMESTAMP WITH TIME ZONE,
   metadata JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
--- Índice para busca por estudante
-CREATE INDEX IF NOT EXISTS idx_academic_documents_student_id ON academic_documents(student_id);
-
--- Índice para busca por tipo de documento
-CREATE INDEX IF NOT EXISTS idx_academic_documents_document_type ON academic_documents(document_type);
-
--- Função para atualizar o timestamp de updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Trigger para atualizar o timestamp de updated_at em student_credentials
-CREATE TRIGGER update_student_credentials_updated_at
-BEFORE UPDATE ON student_credentials
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
-
--- Trigger para atualizar o timestamp de updated_at em academic_documents
-CREATE TRIGGER update_academic_documents_updated_at
-BEFORE UPDATE ON academic_documents
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
-
--- Políticas de segurança RLS para student_credentials
-ALTER TABLE student_credentials ENABLE ROW LEVEL SECURITY;
+-- Add RLS policies for student_credentials
+ALTER TABLE public.student_credentials ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Students can view their own credentials"
-  ON student_credentials FOR SELECT
+  ON public.student_credentials
+  FOR SELECT
   USING (auth.uid() = student_id);
 
 CREATE POLICY "Students can update their own credentials"
-  ON student_credentials FOR UPDATE
+  ON public.student_credentials
+  FOR UPDATE
   USING (auth.uid() = student_id);
 
-CREATE POLICY "Admins can view all credentials"
-  ON student_credentials FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE profiles.id = auth.uid()
-      AND profiles.role = 'admin'
-    )
-  );
+CREATE POLICY "Students can insert their own credentials"
+  ON public.student_credentials
+  FOR INSERT
+  WITH CHECK (auth.uid() = student_id);
 
-CREATE POLICY "Admins can insert credentials"
-  ON student_credentials FOR INSERT
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE profiles.id = auth.uid()
-      AND profiles.role = 'admin'
-    )
-  );
-
-CREATE POLICY "Admins can update credentials"
-  ON student_credentials FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE profiles.id = auth.uid()
-      AND profiles.role = 'admin'
-    )
-  );
-
--- Políticas de segurança RLS para academic_documents
-ALTER TABLE academic_documents ENABLE ROW LEVEL SECURITY;
+-- Add RLS policies for academic_documents
+ALTER TABLE public.academic_documents ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Students can view their own documents"
-  ON academic_documents FOR SELECT
+  ON public.academic_documents
+  FOR SELECT
   USING (auth.uid() = student_id);
 
-CREATE POLICY "Admins can view all documents"
-  ON academic_documents FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE profiles.id = auth.uid()
-      AND profiles.role = 'admin'
-    )
-  );
+-- Create function to check if a student is eligible for a credential
+CREATE OR REPLACE FUNCTION public.check_credential_eligibility(student_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  profile_complete BOOLEAN;
+  has_payments BOOLEAN;
+BEGIN
+  -- Check if profile is complete
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = student_id
+    AND full_name IS NOT NULL
+    AND email IS NOT NULL
+    AND phone IS NOT NULL
+    AND address IS NOT NULL
+    AND document_number IS NOT NULL
+  ) INTO profile_complete;
+  
+  -- Check if student has at least one confirmed payment
+  SELECT EXISTS (
+    SELECT 1 FROM public.payments
+    WHERE student_id = $1
+    AND status = 'confirmed'
+    LIMIT 1
+  ) INTO has_payments;
+  
+  RETURN profile_complete AND has_payments;
+END;
+$$;
 
-CREATE POLICY "Admins can insert documents"
-  ON academic_documents FOR INSERT
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE profiles.id = auth.uid()
-      AND profiles.role = 'admin'
-    )
+-- Create function to validate a credential by QR code
+CREATE OR REPLACE FUNCTION public.validate_credential_by_qrcode(qr_code TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  credential_record RECORD;
+  student_record RECORD;
+  result JSONB;
+BEGIN
+  -- Find credential with the QR code
+  SELECT * FROM public.student_credentials
+  WHERE qr_code_data = qr_code
+  INTO credential_record;
+  
+  -- If no credential found
+  IF credential_record IS NULL THEN
+    RETURN jsonb_build_object(
+      'valid', false,
+      'error', 'Credencial não encontrada'
+    );
+  END IF;
+  
+  -- If credential is not active
+  IF credential_record.status != 'active' THEN
+    RETURN jsonb_build_object(
+      'valid', false,
+      'status', credential_record.status,
+      'message', 'Esta credencial não está mais ativa'
+    );
+  END IF;
+  
+  -- If credential is expired
+  IF credential_record.expiry_date IS NOT NULL AND credential_record.expiry_date < now() THEN
+    RETURN jsonb_build_object(
+      'valid', false,
+      'status', 'expired',
+      'message', 'Esta credencial está expirada'
+    );
+  END IF;
+  
+  -- Get student information
+  SELECT * FROM auth.users
+  WHERE id = credential_record.student_id
+  INTO student_record;
+  
+  -- Return valid credential with student info
+  RETURN jsonb_build_object(
+    'valid', true,
+    'student', jsonb_build_object(
+      'id', student_record.id,
+      'name', student_record.raw_user_meta_data->>'name',
+      'email', student_record.email
+    ),
+    'issueDate', credential_record.issue_date,
+    'expiryDate', credential_record.expiry_date
   );
-
-CREATE POLICY "Admins can update documents"
-  ON academic_documents FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE profiles.id = auth.uid()
-      AND profiles.role = 'admin'
-    )
-  );
+END;
+$$;

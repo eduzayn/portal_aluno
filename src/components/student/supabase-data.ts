@@ -1,9 +1,6 @@
-import { supabase } from '../../lib/supabase'
-import { Student, Course, Certificate, FinancialRecord } from './types'
-import { getStudentProfile as getMockStudentProfile, getCourses } from './mock-data'
-
-// Alias for getCourses to maintain compatibility
-const getMockStudentCourses = getCourses
+import { supabase } from '../../lib/supabase';
+import { Student, Course, Module, Lesson, Certificate, StudentCredential, AcademicDocument } from './types';
+import { getStudentProfile as getMockStudentProfile, getStudentCourses as getMockStudentCourses } from './mock-data';
 
 /**
  * Fetch student profile from Supabase
@@ -15,14 +12,202 @@ export async function getStudentProfile(studentId: string = 'student-1'): Promis
       .from('students')
       .select('*, certificates(*)')
       .eq('id', studentId)
-      .single()
+      .single();
     
-    if (error) throw error
-    return data as Student
+    if (error) throw error;
+    
+    // Check if student has a valid credential
+    const hasCredential = await getStudentCredential(studentId) !== null;
+    
+    return {
+      ...data as Student,
+      hasValidCredential: hasCredential
+    };
   } catch (error) {
-    console.error('Error fetching student profile:', error)
+    console.error('Error fetching student profile:', error);
     // Fallback to mock data
-    return getMockStudentProfile()
+    return getMockStudentProfile();
+  }
+}
+
+/**
+ * Fetch student credential from Supabase
+ */
+export async function getStudentCredential(studentId: string): Promise<StudentCredential | null> {
+  try {
+    const { data, error } = await supabase
+      .from('student_credentials')
+      .select('*')
+      .eq('student_id', studentId)
+      .single();
+    
+    if (error) throw error;
+    
+    if (!data) return null;
+    
+    return {
+      id: data.id,
+      studentId: data.student_id,
+      photoUrl: data.photo_url,
+      qrCodeData: data.qr_code_data,
+      issueDate: data.issue_date,
+      expiryDate: data.expiry_date,
+      status: data.status
+    };
+  } catch (error) {
+    console.error('Error fetching student credential:', error);
+    return null;
+  }
+}
+
+/**
+ * Create or update student credential
+ */
+export async function upsertStudentCredential(
+  credential: Omit<StudentCredential, 'id' | 'qrCodeData'>
+): Promise<StudentCredential | null> {
+  try {
+    // Generate QR code data (unique identifier + timestamp + student ID)
+    const qrCodeData = `${crypto.randomUUID()}_${Date.now()}_${credential.studentId}`;
+    
+    const { data, error } = await supabase
+      .from('student_credentials')
+      .upsert({
+        student_id: credential.studentId,
+        photo_url: credential.photoUrl,
+        qr_code_data: qrCodeData,
+        issue_date: credential.issueDate,
+        expiry_date: credential.expiryDate,
+        status: credential.status,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'student_id'
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      studentId: data.student_id,
+      photoUrl: data.photo_url,
+      qrCodeData: data.qr_code_data,
+      issueDate: data.issue_date,
+      expiryDate: data.expiry_date,
+      status: data.status
+    };
+  } catch (error) {
+    console.error('Error creating/updating student credential:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetch academic documents from Supabase
+ */
+export async function getAcademicDocuments(
+  studentId: string,
+  documentType?: 'grade_history' | 'enrollment_declaration' | 'course_completion'
+): Promise<AcademicDocument[]> {
+  try {
+    let query = supabase
+      .from('academic_documents')
+      .select('*')
+      .eq('student_id', studentId);
+    
+    if (documentType) {
+      query = query.eq('document_type', documentType);
+    }
+    
+    const { data, error } = await query.order('issue_date', { ascending: false });
+    
+    if (error) throw error;
+    
+    return data.map((doc: any) => ({
+      id: doc.id,
+      studentId: doc.student_id,
+      documentType: doc.document_type,
+      title: doc.title,
+      fileUrl: doc.file_url,
+      issueDate: doc.issue_date,
+      expiryDate: doc.expiry_date,
+      metadata: doc.metadata
+    }));
+  } catch (error) {
+    console.error('Error fetching academic documents:', error);
+    return [];
+  }
+}
+
+/**
+ * Create academic document
+ */
+export async function createAcademicDocument(
+  document: Omit<AcademicDocument, 'id'>
+): Promise<AcademicDocument | null> {
+  try {
+    const { data, error } = await supabase
+      .from('academic_documents')
+      .insert({
+        student_id: document.studentId,
+        document_type: document.documentType,
+        title: document.title,
+        file_url: document.fileUrl,
+        issue_date: document.issueDate,
+        expiry_date: document.expiryDate,
+        metadata: document.metadata
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      studentId: data.student_id,
+      documentType: data.document_type,
+      title: data.title,
+      fileUrl: data.file_url,
+      issueDate: data.issue_date,
+      expiryDate: data.expiry_date,
+      metadata: data.metadata
+    };
+  } catch (error) {
+    console.error('Error creating academic document:', error);
+    return null;
+  }
+}
+
+/**
+ * Verify if student is eligible for credential
+ * (has complete documentation and at least one payment)
+ */
+export async function checkCredentialEligibility(studentId: string): Promise<boolean> {
+  try {
+    // Check if student has complete profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', studentId)
+      .single();
+    
+    if (profileError || !profile) return false;
+    
+    // Check if student has at least one payment
+    const { data: payments, error: paymentsError } = await supabase
+      .from('financial_records')
+      .select('id')
+      .eq('student_id', studentId)
+      .eq('status', 'paid')
+      .limit(1);
+    
+    if (paymentsError) return false;
+    
+    return payments.length > 0;
+  } catch (error) {
+    console.error('Error checking credential eligibility:', error);
+    return false;
   }
 }
 
@@ -39,154 +224,50 @@ export async function getStudentCourses(studentId: string = 'student-1'): Promis
           id, 
           title, 
           description, 
-          imageUrl, 
-          duration, 
-          totalModules, 
-          totalLessons,
+          instructor,
+          startDate,
+          endDate,
           modules:modules(
             id, 
             title, 
             description, 
             duration, 
             status,
-            order,
             lessons:lessons(
               id, 
               title, 
               description, 
               duration, 
               type, 
-              status,
-              order,
-              completed
+              status
             )
           )
         ),
         progress,
         status
       `)
-      .eq('student_id', studentId)
+      .eq('student_id', studentId);
     
-    if (error) throw error
+    if (error) throw error;
     
     // Transform the data to match the Course type
     const courses = data.map((enrollment: any) => ({
       id: enrollment.courses.id,
       title: enrollment.courses.title,
       description: enrollment.courses.description,
-      imageUrl: enrollment.courses.imageUrl,
-      duration: enrollment.courses.duration,
-      totalModules: enrollment.courses.totalModules,
-      totalLessons: enrollment.courses.totalLessons,
+      instructor: enrollment.courses.instructor,
+      startDate: enrollment.courses.startDate,
+      endDate: enrollment.courses.endDate,
       progress: enrollment.progress,
       status: enrollment.status,
       modules: enrollment.courses.modules
-    }))
+    }));
     
-    return courses as unknown as Course[]
+    return courses as Course[];
   } catch (error) {
-    console.error('Error fetching student courses:', error)
+    console.error('Error fetching student courses:', error);
     // Fallback to mock data
-    return getMockStudentCourses()
-  }
-}
-
-/**
- * Fetch course progress from Supabase
- * Falls back to random progress if Supabase fetch fails
- */
-export async function getCourseProgress(studentId: string, courseId: string): Promise<number> {
-  try {
-    const { data: completedLessons, error: completedError } = await supabase
-      .from('lesson_progress')
-      .select('lesson_id')
-      .eq('student_id', studentId)
-      .eq('course_id', courseId)
-      .eq('completed', true)
-    
-    if (completedError) throw completedError
-    
-    const { data: totalLessons, error: totalError } = await supabase
-      .from('lessons')
-      .select('id')
-      .eq('course_id', courseId)
-    
-    if (totalError) throw totalError
-    
-    if (totalLessons.length === 0) return 0
-    return (completedLessons.length / totalLessons.length) * 100
-  } catch (error) {
-    console.error('Error calculating course progress:', error)
-    return Math.floor(Math.random() * 100) // Return random progress for mock data
-  }
-}
-
-/**
- * Fetch learning path from Supabase
- * Falls back to empty array if Supabase fetch fails
- */
-export async function getLearningPath(studentId: string): Promise<any[]> {
-  try {
-    const { data: enrollments, error: enrollmentError } = await supabase
-      .from('enrollments')
-      .select('course_id')
-      .eq('student_id', studentId)
-    
-    if (enrollmentError) throw enrollmentError
-    
-    if (!enrollments.length) return []
-    
-    const courseIds = enrollments.map((e: { course_id: string }) => e.course_id)
-    
-    const { data: modules, error: modulesError } = await supabase
-      .from('modules')
-      .select(`
-        id,
-        title,
-        description,
-        course_id,
-        order,
-        duration,
-        status,
-        lessons:lessons (
-          id,
-          title,
-          description,
-          duration,
-          order,
-          type,
-          status
-        )
-      `)
-      .in('course_id', courseIds)
-      .order('order')
-    
-    if (modulesError) throw modulesError
-    
-    // Transform the data to match our Module type
-    return modules.map((module: any) => ({
-      id: module.id,
-      title: module.title,
-      description: module.description,
-      duration: module.duration,
-      status: module.status || 'available',
-      courseId: module.course_id,
-      order: module.order,
-      lessons: module.lessons.map((lesson: any) => ({
-        id: lesson.id,
-        title: lesson.title,
-        description: lesson.description,
-        duration: lesson.duration,
-        type: lesson.type || 'video',
-        status: lesson.status || 'available',
-        order: lesson.order,
-        completed: lesson.status === 'completed'
-      })).sort((a: any, b: any) => a.order - b.order)
-    }))
-  } catch (error) {
-    console.error('Error fetching learning path:', error)
-    // Return empty array for now - would implement mock data fallback in production
-    return []
+    return getMockStudentCourses();
   }
 }
 
@@ -205,11 +286,11 @@ export async function getStudentCertificates(studentId: string = 'student-1'): P
         courses:course_id (title),
         issue_date,
         expiry_date,
-        certificate_url
+        download_url
       `)
-      .eq('student_id', studentId)
+      .eq('student_id', studentId);
     
-    if (error) throw error
+    if (error) throw error;
     
     // Transform the data to match our Certificate type
     return data.map((cert: any) => ({
@@ -219,105 +300,12 @@ export async function getStudentCertificates(studentId: string = 'student-1'): P
       courseName: cert.courses.title,
       issueDate: cert.issue_date,
       expiryDate: cert.expiry_date,
-      downloadUrl: cert.certificate_url,
-      certificateUrl: cert.certificate_url
-    }))
+      downloadUrl: cert.download_url
+    }));
   } catch (error) {
-    console.error('Error fetching certificates:', error)
+    console.error('Error fetching certificates:', error);
     // Fallback to mock data
-    const student = await getMockStudentProfile()
-    return student.certificates
-  }
-}
-
-/**
- * Fetch financial records from Supabase
- * Falls back to empty array if Supabase fetch fails
- */
-export async function getFinancialRecords(studentId: string): Promise<FinancialRecord[]> {
-  try {
-    const { data, error } = await supabase
-      .from('financial_records')
-      .select('*')
-      .eq('student_id', studentId)
-      .order('due_date', { ascending: false })
-    
-    if (error) throw error
-    
-    // Transform the data to match our FinancialRecord type
-    return data.map((record: any) => ({
-      id: record.id,
-      description: record.description,
-      amount: record.amount,
-      dueDate: new Date(record.due_date),
-      paymentDate: record.payment_date ? new Date(record.payment_date) : null,
-      status: record.status,
-      receiptUrl: record.receipt_url
-    }))
-  } catch (error) {
-    console.error('Error fetching financial records:', error)
-    // Return empty array for now - would implement mock data fallback in production
-    return []
-  }
-}
-
-/**
- * Update course progress in Supabase
- */
-export async function updateCourseProgress(
-  studentId: string,
-  courseId: string,
-  progress: number,
-  status: 'not_started' | 'in_progress' | 'completed'
-): Promise<void> {
-  try {
-    const { error } = await supabase
-      .from('enrollments')
-      .update({ progress, status })
-      .eq('student_id', studentId)
-      .eq('course_id', courseId)
-    
-    if (error) throw error
-  } catch (error) {
-    console.error('Error updating course progress:', error)
-    throw error
-  }
-}
-
-/**
- * Update lesson status in Supabase
- */
-export async function updateLessonStatus(
-  lessonId: string,
-  status: 'locked' | 'available' | 'in_progress' | 'completed',
-  completed: boolean = false
-): Promise<void> {
-  try {
-    const { error } = await supabase
-      .from('lessons')
-      .update({ status, completed })
-      .eq('id', lessonId)
-    
-    if (error) throw error
-  } catch (error) {
-    console.error('Error updating lesson status:', error)
-    throw error
-  }
-}
-
-/**
- * Helper function to use Supabase or fall back to mock data
- */
-export async function useSupabaseOrMock<T>(
-  supabaseFunction: () => Promise<T>,
-  mockFunction: () => Promise<T>
-): Promise<T> {
-  try {
-    // Try to use Supabase first
-    return await supabaseFunction()
-  } catch (error) {
-    console.warn('Falling back to mock data:', error)
-    // Fall back to mock data if Supabase fails
-    return await mockFunction()
+    const student = await getMockStudentProfile();
+    return student.certificates;
   }
 }

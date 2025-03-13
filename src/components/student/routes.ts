@@ -74,6 +74,16 @@ export const studentNavItems: RouteItem[] = [
     icon: FileText,
   },
   {
+    path: studentRoutes.credential,
+    name: 'Credencial',
+    icon: User,
+  },
+  {
+    path: studentRoutes.documents,
+    name: 'Documentos',
+    icon: FileCheck,
+  },
+  {
     path: studentRoutes.certificates,
     name: 'Certificados',
     icon: Award,
