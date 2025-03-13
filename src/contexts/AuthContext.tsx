@@ -204,7 +204,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('portal_aluno_temp_user');
     // Clear the cookie
     document.cookie = 'portal_aluno_temp_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    // Clear session storage as well
+    sessionStorage.removeItem('portal_aluno_temp_user');
+    // Sign out from Supabase
     await supabase.auth.signOut();
+    // Redirect to login page
     router.push('/login');
   };
 
