@@ -1,19 +1,12 @@
-# Portal do Aluno - Vercel Deployment Instructions
+# Portal do Aluno - Vercel Deployment Guide
 
 ## Prerequisites
-- GitHub repository: [eduzayn/portal_aluno](https://github.com/eduzayn/portal_aluno)
-- Vercel account with access to deploy
+- GitHub repository access
+- Vercel account
+- Supabase project credentials
 
-## Deployment Steps
-
-### 1. Connect Repository to Vercel
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Click "Add New" → "Project"
-3. Select the GitHub repository "eduzayn/portal_aluno"
-4. Configure project settings
-
-### 2. Configure Environment Variables
-Add the following environment variables in the Vercel project settings:
+## Environment Variables
+The following environment variables must be configured in Vercel:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://uasnyifizdjxogowijip.supabase.co
@@ -24,32 +17,49 @@ NEXTAUTH_URL=https://portal-aluno.vercel.app
 NEXTAUTH_SECRET=portal-aluno-nextauth-secret
 ```
 
-### 3. Deploy
-1. Click "Deploy" in the Vercel dashboard
-2. Vercel will build and deploy the project automatically
+## Deployment Steps
 
-### 4. Verify Deployment
-1. Once deployment is complete, visit the provided URL
-2. Test the following functionality:
-   - Login and authentication
-   - Student profile and avatar upload
-   - Course listing and details
-   - Credential generation and validation
-   - Document access and download
+### 1. Connect GitHub Repository
+1. Log in to your Vercel account
+2. Click "Add New" → "Project"
+3. Select the GitHub repository "eduzayn/portal_aluno"
+4. Click "Import"
+
+### 2. Configure Project
+1. Select the branch to deploy (use `devin/1711166700-resolve-conflicts-pr8-11`)
+2. Framework preset: Next.js
+3. Root directory: ./
+4. Build command: `npm run build`
+5. Output directory: .next
+
+### 3. Environment Variables
+1. Click "Environment Variables" section
+2. Add all the environment variables listed above
+3. Make sure to mark the sensitive variables as "Production" only
+
+### 4. Deploy
+1. Click "Deploy"
+2. Wait for the build and deployment to complete
+
+### 5. Verify Deployment
+1. Once deployed, Vercel will provide a URL to access your application
+2. Use the `DEPLOYMENT_VERIFICATION.md` checklist to verify all functionality
 
 ## Troubleshooting
+If you encounter build errors:
+1. Check the build logs in Vercel
+2. Verify that all environment variables are correctly set
+3. Ensure that the project dependencies are properly installed
 
-If you encounter any issues during deployment:
+## Storage Configuration
+The application uses Supabase Storage for file uploads. Make sure the following buckets exist in your Supabase project:
+- `avatars`: For user profile pictures
+- `documents`: For academic documents
+- `course-materials`: For course-related files
 
-1. Check build logs in Vercel dashboard for errors
-2. Verify all environment variables are correctly set
-3. Ensure all dependencies are properly installed
-4. Check that Supabase connection is working correctly
-
-## Notes on Resolved Issues
-
-- Fixed client component issues by adding "use client" directives
-- Resolved type errors in AcademicDocument interface
-- Fixed NextAuth route configuration
-- Temporarily simplified locale handling to ensure build success
-- Successfully built project locally with `npm run build`
+## Post-Deployment Tasks
+1. Run the storage policy script to set up proper access controls:
+   ```
+   node scripts/database/create-storage-policies.js
+   ```
+2. Verify that file uploads work correctly in the production environment
