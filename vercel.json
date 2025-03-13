@@ -13,5 +13,26 @@
     "SUPABASE_JWT_SECRET": "mxGuGt+ZgDYlM2QDPYcrcnm+kQfOkjkqpSRHQf6HXwOATKSu/lE0hqQjRmEBdUaOt0NExUE0L4kDO9SFCUL8rw==",
     "NEXTAUTH_URL": "https://portal-aluno.vercel.app",
     "NEXTAUTH_SECRET": "portal-aluno-nextauth-secret"
-  }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/pt-BR/(.*)",
+      "dest": "/$1"
+    },
+    {
+      "src": "/en/(.*)",
+      "dest": "/$1"
+    }
+  ]
 }
