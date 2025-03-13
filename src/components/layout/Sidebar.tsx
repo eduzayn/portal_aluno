@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { colors } from '../../styles/colors';
+import { colors } from '../../components/providers/colors';
 import { 
   Home, 
   Users, 
@@ -77,7 +77,7 @@ interface SidebarProps {
   navItems?: Array<{
     path: string;
     name: string;
-    icon: any;
+    icon: React.ReactNode;
   }>;
 }
 
@@ -224,15 +224,7 @@ export const Sidebar = ({ module = 'student', navItems }: SidebarProps) => {
           <div className="p-4 border-t border-neutral-200">
             <div className="flex items-center justify-between">
               <span className="text-sm text-neutral-500">{t('language')}</span>
-              {/* Try to import LanguageSwitcher if available */}
-              {(() => {
-                try {
-                  const LanguageSwitcher = require('../ui/LanguageSwitcher').default;
-                  return <LanguageSwitcher />;
-                } catch (error) {
-                  return <span className="text-sm">PT-BR</span>;
-                }
-              })()}
+              <span className="text-sm">PT-BR</span>
             </div>
           </div>
           

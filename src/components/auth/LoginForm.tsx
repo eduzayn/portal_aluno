@@ -18,14 +18,24 @@ export default function LoginForm() {
     setLoading(true);
     setError(null);
 
-    const result = await login({ email, password });
-    
-    setLoading(false);
-    
-    if (result.success) {
-      router.push('/student/dashboard');
-    } else {
-      setError(result.error || 'Falha ao fazer login');
+    try {
+      console.log('Attempting login with:', email);
+      const result = await login({ email, password });
+      
+      setLoading(false);
+      
+      if (result.success) {
+        console.log('Login successful, redirecting to dashboard...');
+        // Explicitly redirect to dashboard
+        router.push('/student/dashboard');
+      } else {
+        console.error('Login failed:', result.error);
+        setError(result.error || 'Falha ao fazer login');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoading(false);
+      setError('Ocorreu um erro durante o login. Tente novamente.');
     }
   };
 
