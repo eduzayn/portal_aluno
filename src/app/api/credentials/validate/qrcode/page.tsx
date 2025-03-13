@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +21,57 @@ interface ValidationResult {
   error?: string;
 }
 
-export default function QRCodeValidationPage() {
+// Loading component for Suspense fallback
+function ValidationLoading() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Carregando validação de credencial...</p>
+      </div>
+    </div>
+  );
+}
+
+// Form component for manual validation
+function ManualValidationForm() {
+  const handleManualValidation = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const qrCodeData = formData.get('qrCode') as string;
+    
+    if (qrCodeData) {
+      window.location.href = `/api/credentials/validate/qrcode?code=${qrCodeData}`;
+    }
+  };
+
+  return (
+    <form onSubmit={handleManualValidation} className="mt-6 space-y-4">
+      <div>
+        <label htmlFor="qrCode" className="block text-sm font-medium text-gray-700 mb-1">
+          Código QR
+        </label>
+        <input
+          type="text"
+          id="qrCode"
+          name="qrCode"
+          required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          placeholder="Digite o código QR"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Validar
+      </button>
+    </form>
+  );
+}
+
+// Main validation content component
+function ValidationContent() {
   const searchParams = useSearchParams();
   const qrCode = searchParams.get('code');
   const [result, setResult] = useState<ValidationResult | null>(null);
@@ -52,16 +102,6 @@ export default function QRCodeValidationPage() {
     validateQRCode();
   }, [qrCode]);
 
-  const handleManualValidation = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const qrCodeData = formData.get('qrCode') as string;
-    
-    if (qrCodeData) {
-      window.location.href = `/api/credentials/validate/qrcode?code=${qrCodeData}`;
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
@@ -85,29 +125,7 @@ export default function QRCodeValidationPage() {
           <h1 className="text-xl font-bold text-red-600 mb-2">Validação Falhou</h1>
           <p className="text-gray-600">{error || result?.error}</p>
           
-          {!qrCode && (
-            <form onSubmit={handleManualValidation} className="mt-6 space-y-4">
-              <div>
-                <label htmlFor="qrCode" className="block text-sm font-medium text-gray-700 mb-1">
-                  Código QR
-                </label>
-                <input
-                  type="text"
-                  id="qrCode"
-                  name="qrCode"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Digite o código QR"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Validar
-              </button>
-            </form>
-          )}
+          {!qrCode && <ManualValidationForm />}
         </div>
       </div>
     );
@@ -130,29 +148,7 @@ export default function QRCodeValidationPage() {
             </p>
           )}
           
-          {!qrCode && (
-            <form onSubmit={handleManualValidation} className="mt-6 space-y-4">
-              <div>
-                <label htmlFor="qrCode" className="block text-sm font-medium text-gray-700 mb-1">
-                  Código QR
-                </label>
-                <input
-                  type="text"
-                  id="qrCode"
-                  name="qrCode"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Digite o código QR"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Validar
-              </button>
-            </form>
-          )}
+          {!qrCode && <ManualValidationForm />}
         </div>
       </div>
     );
@@ -241,5 +237,14 @@ export default function QRCodeValidationPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function QRCodeValidationPage() {
+  return (
+    <Suspense fallback={<ValidationLoading />}>
+      <ValidationContent />
+    </Suspense>
   );
 }

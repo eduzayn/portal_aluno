@@ -60,6 +60,7 @@ export interface AcademicDocument {
   title: string;
   fileUrl: string | null;
   issueDate: string;
+  expiryDate?: string;
   metadata: {
     semester?: string;
     courses?: string[];

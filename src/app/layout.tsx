@@ -1,6 +1,10 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+import { AuthProvider } from '../contexts/AuthContext'
+import { ThemeProvider } from '../components/providers/ThemeProvider'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'Portal do Aluno - Edunéxia',
@@ -12,9 +16,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Redirect to the default locale (pt-BR)
-  redirect('/pt-BR');
-  
-  // This part won't be reached due to the redirect
-  return null;
+  return (
+    <html lang="pt-BR">
+      <body className={`${inter.variable} antialiased bg-neutral-50`}>
+        <ThemeProvider module="student">
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  )
 }
