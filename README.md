@@ -58,3 +58,17 @@ src/
 ## Licença
 
 Propriedade da Edunéxia. Todos os direitos reservados.
+
+## Storage Buckets
+
+O projeto utiliza os seguintes buckets de armazenamento no Supabase:
+
+- `Avatars` - Armazenamento de avatares de usuários (note o 'A' maiúsculo)
+- `course-thumbnails` - Miniaturas de cursos
+- `certificates` - Certificados gerados
+- `receipts` - Recibos e comprovantes
+- `profile-images` - Imagens de perfil
+- `lesson-content` - Conteúdo de aulas
+- `supplementary-materials` - Materiais complementares
+
+Para acessar os buckets, utilize as funções em `src/utils/storage-utils.ts` e as constantes em `src/config/storage-buckets.ts`.
