@@ -83,7 +83,7 @@ export async function getStudentCourses(studentId: string = 'student-1'): Promis
       modules: enrollment.courses.modules
     }))
     
-    return courses as Course[]
+    return courses as unknown as Course[]
   } catch (error) {
     console.error('Error fetching student courses:', error)
     // Fallback to mock data
@@ -125,7 +125,7 @@ export async function getCourseProgress(studentId: string, courseId: string): Pr
  * Fetch learning path from Supabase
  * Falls back to empty array if Supabase fetch fails
  */
-export async function getLearningPath(studentId: string): Promise<Module[]> {
+export async function getLearningPath(studentId: string): Promise<any[]> {
   try {
     const { data: enrollments, error: enrollmentError } = await supabase
       .from('enrollments')

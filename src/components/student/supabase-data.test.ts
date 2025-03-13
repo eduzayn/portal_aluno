@@ -45,7 +45,7 @@ describe('Supabase Data Service', () => {
       }
       
       // Mock the Supabase response
-      const mockSingle = jest.fn().mockResolvedValue({
+      const mockSingle = jest.fn().mockReturnValue({
         data: mockData,
         error: null
       })
@@ -67,7 +67,7 @@ describe('Supabase Data Service', () => {
       const mockData = { id: 'student-1', name: 'Mock Student', certificates: [] }
       
       // Mock the Supabase error response
-      const mockSingle = jest.fn().mockResolvedValue({
+      const mockSingle = jest.fn().mockReturnValue({
         data: null,
         error: mockError
       })
@@ -78,7 +78,7 @@ describe('Supabase Data Service', () => {
         select: mockSelect
       })
       
-      ;(getMockStudentProfile as jest.Mock).mockResolvedValue(mockData)
+      ;(getMockStudentProfile as jest.Mock).mockImplementation(() => Promise.resolve(mockData))
 
       const result = await getStudentProfile('student-1')
       
@@ -92,7 +92,7 @@ describe('Supabase Data Service', () => {
       const mockData = [{ id: 'course-1', title: 'Test Course', modules: [] }]
       
       // Mock the Supabase response for courses
-      const mockGet = jest.fn().mockResolvedValue({
+      const mockGet = jest.fn().mockReturnValue({
         data: mockData,
         error: null
       })
@@ -117,7 +117,7 @@ describe('Supabase Data Service', () => {
       const mockData = [{ id: 'course-1', title: 'Mock Course', modules: [] }]
       
       // Mock the Supabase error response for courses
-      const mockGet = jest.fn().mockResolvedValue({
+      const mockGet = jest.fn().mockReturnValue({
         data: null,
         error: mockError
       })
@@ -128,7 +128,7 @@ describe('Supabase Data Service', () => {
         select: mockSelect
       })
       
-      ;(getMockStudentCourses as jest.Mock).mockResolvedValue(mockData)
+      ;(getMockStudentCourses as jest.Mock).mockImplementation(() => Promise.resolve(mockData))
 
       const result = await getStudentCourses('student-1')
       
@@ -140,7 +140,7 @@ describe('Supabase Data Service', () => {
   describe('getLearningPath', () => {
     it('returns empty array when no enrollments found', async () => {
       // Mock the Supabase response for learning paths
-      const mockGet = jest.fn().mockResolvedValue({
+      const mockGet = jest.fn().mockReturnValue({
         data: [],
         error: null
       })
