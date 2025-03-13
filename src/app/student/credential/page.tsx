@@ -6,6 +6,7 @@ import { getStudentCredential, checkCredentialEligibility, upsertStudentCredenti
 import { StudentCredential } from '@/components/student/types';
 import QRCode from 'qrcode.react';
 import { Camera, Download, Printer, RefreshCw, Upload } from 'lucide-react';
+import Image from 'next/image';
 import { STORAGE_BUCKETS } from '@/config/storage-buckets';
 import { uploadFile, getPublicUrl } from '@/utils/storage-utils';
 
@@ -211,10 +212,12 @@ export default function StudentCredentialPage() {
           >
             <div className="flex flex-col items-center">
               <div className="mb-4 w-24 h-24 rounded-full overflow-hidden border-2 border-indigo-500">
-                <img 
+                <Image 
                   src={credential.photoUrl || '/images/avatars/avatar-1.png'} 
                   alt="Foto do estudante" 
                   className="w-full h-full object-cover"
+                  width={96}
+                  height={96}
                 />
               </div>
               
@@ -282,10 +285,12 @@ export default function StudentCredentialPage() {
               {photoUrl ? (
                 <div className="mb-6">
                   <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-indigo-500 mx-auto">
-                    <img 
+                    <Image 
                       src={photoUrl} 
                       alt="Foto para credencial" 
                       className="w-full h-full object-cover"
+                      width={128}
+                      height={128}
                     />
                   </div>
                   <button
