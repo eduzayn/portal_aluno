@@ -27,6 +27,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Verificar sessão atual
     const checkSession = async () => {
       try {
+        // Check for temporary user in localStorage
+        const tempUserJson = localStorage.getItem('portal_aluno_temp_user');
+        if (tempUserJson) {
+          const tempUser = JSON.parse(tempUserJson);
+          setState({
+            user: tempUser,
+            loading: false,
+            error: null,
+          });
+          return;
+        }
+        
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
@@ -53,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       } catch (error) {
         console.error('Erro ao verificar sessão:', error);
-        setState({ user: null, loading: false, error: 'Falha ao verificar sessão' });
+        setState({ user: null, loading: false, error: null });
       }
     };
 
@@ -92,14 +104,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (credentials: LoginCredentials) => {
     try {
+      console.log('Login attempt with:', credentials.email);
+      
       // Check for temporary user credentials
       if (credentials.email === 'teste@edunexia.com.br' && credentials.password === 'Teste@123') {
+        console.log('Using test credentials, creating temporary user session');
+        
         // Create a temporary user profile
         const tempUser: UserProfile = {
           id: 'temp-user-id',
           email: 'teste@edunexia.com.br',
           name: 'Usuário Temporário',
-          role: 'admin',
+          role: 'student',
           avatar_url: undefined,
         };
         
@@ -109,6 +125,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           loading: false,
           error: null,
         });
+        
+        // Store session in localStorage to persist across page loads
+        localStorage.setItem('portal_aluno_temp_user', JSON.stringify(tempUser));
+        
+        // Set a cookie for the middleware to detect with a longer expiration
+        document.cookie = 'portal_aluno_temp_user=true; path=/; max-age=86400';
+        
+        console.log('Temporary user session created, redirecting to dashboard...');
+        
+        // Redirect to dashboard after successful login
+        setTimeout(() => {
+          router.push('/student/dashboard');
+        }, 100);
         
         return { success: true };
       }
@@ -171,6 +200,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
+    // Clear temporary user from localStorage
+    localStorage.removeItem('portal_aluno_temp_user');
+    // Clear the cookie
+    document.cookie = 'portal_aluno_temp_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     await supabase.auth.signOut();
     router.push('/login');
   };
