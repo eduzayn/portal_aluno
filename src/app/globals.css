@@ -60,7 +60,7 @@
   }
   
   .sidebar-item:hover {
-    @apply bg-gradient-to-r from-indigo-50 to-transparent;
+    @apply bg-gradient-to-r from-indigo-50 to-transparent text-indigo-700;
   }
   
   .sidebar-item.active {
