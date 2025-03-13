@@ -1,18 +1,18 @@
 import React from 'react';
-
-// Define simple icon components as React components
-const BookOpen = () => React.createElement('span', { className: 'icon' }, 'B');
-const Award = () => React.createElement('span', { className: 'icon' }, 'A');
-const Bell = () => React.createElement('span', { className: 'icon' }, 'N');
-const MessageSquare = () => React.createElement('span', { className: 'icon' }, 'M');
-const User = () => React.createElement('span', { className: 'icon' }, 'U');
-const Settings = () => React.createElement('span', { className: 'icon' }, 'S');
-const FileCheck = () => React.createElement('span', { className: 'icon' }, 'F');
-const BookMarked = () => React.createElement('span', { className: 'icon' }, 'BM');
-const CreditCard = () => React.createElement('span', { className: 'icon' }, 'C');
-const BarChart2 = () => React.createElement('span', { className: 'icon' }, 'BC');
-const CardIcon = () => React.createElement('span', { className: 'icon' }, 'CI');
-const FileText = () => React.createElement('span', { className: 'icon' }, 'FT');
+import { 
+  BookOpen, 
+  Award, 
+  Bell, 
+  MessageSquare, 
+  User, 
+  Settings, 
+  FileCheck, 
+  BookMarked, 
+  CreditCard, 
+  BarChart2,
+  Tag as CardIcon, 
+  FileText 
+} from 'lucide-react';
 
 export interface RouteItem {
   path: string;
@@ -56,62 +56,62 @@ export const studentNavItems: RouteItem[] = [
   {
     path: studentRoutes.dashboard,
     name: 'Dashboard',
-    icon: React.createElement(BarChart2)
+    icon: React.createElement(BarChart2, { size: 20, className: "text-blue-500" })
   },
   {
     path: studentRoutes.profile,
     name: 'Perfil',
-    icon: React.createElement(User)
+    icon: React.createElement(User, { size: 20, className: "text-pink-500" })
   },
   {
     path: studentRoutes.courses,
     name: 'Cursos',
-    icon: React.createElement(BookOpen)
+    icon: React.createElement(BookOpen, { size: 20, className: "text-green-500" })
   },
   {
     path: studentRoutes.learningPath,
     name: 'Rotas de Aprendizagem',
-    icon: React.createElement(BookMarked)
+    icon: React.createElement(BookMarked, { size: 20, className: "text-purple-500" })
   },
   {
     path: studentRoutes.credential,
     name: 'Credencial',
-    icon: React.createElement(CardIcon)
+    icon: React.createElement(CardIcon, { size: 20, className: "text-rose-500" })
   },
   {
     path: studentRoutes.documents,
     name: 'Documentos',
-    icon: React.createElement(FileText)
+    icon: React.createElement(FileText, { size: 20, className: "text-orange-500" })
   },
   // Removed duplicate entries for Credencial and Documentos
   {
     path: studentRoutes.certificates,
     name: 'Certificados',
-    icon: React.createElement(Award)
+    icon: React.createElement(Award, { size: 20, className: "text-indigo-500" })
   },
   {
     path: studentRoutes.grades,
     name: 'Notas',
-    icon: React.createElement(FileCheck)
+    icon: React.createElement(FileCheck, { size: 20, className: "text-amber-500" })
   },
   {
     path: studentRoutes.financial,
     name: 'Financeiro',
-    icon: React.createElement(CreditCard)
+    icon: React.createElement(CreditCard, { size: 20, className: "text-emerald-500" })
   },
   {
     path: studentRoutes.notifications,
     name: 'Notificações',
-    icon: React.createElement(Bell)
+    icon: React.createElement(Bell, { size: 20, className: "text-violet-500" })
   },
   {
     path: studentRoutes.messages,
     name: 'Mensagens',
-    icon: React.createElement(MessageSquare)
+    icon: React.createElement(MessageSquare, { size: 20, className: "text-cyan-500" })
   },
   {
     path: studentRoutes.settings,
     name: 'Configurações',
-    icon: React.createElement(Settings)
+    icon: React.createElement(Settings, { size: 20, className: "text-gray-500" })
   }
 ];
