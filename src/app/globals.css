@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 :root {
-  /* Using the design modernization color scheme (Indigo-based) */
   --primary: 238 100% 67%; /* Indigo */
   --primary-foreground: 0 0% 100%;
   --secondary: 262 83% 58%; /* Purple */
