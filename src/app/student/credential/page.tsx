@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { getStudentCredential, checkCredentialEligibility, upsertStudentCredential } from '@/components/student/mock-data';
-import { StudentCredential } from '@/components/student/types';
-import QRCode from 'qrcode.react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../../../contexts/AuthContext';
+import { getStudentCredential, checkCredentialEligibility, upsertStudentCredential } from '../../../components/student/supabase-data';
+import { StudentCredential } from '../../../components/student/types';
+import { QRCodeSVG } from 'qrcode.react';
 import { Camera, Download, Printer, RefreshCw, Upload } from 'lucide-react';
-import { STORAGE_BUCKETS } from '@/config/storage-buckets';
-import { uploadFile, getPublicUrl } from '@/utils/storage-utils';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { STORAGE_BUCKETS } from '../../../config/storage-buckets';
+import { uploadFile, getPublicUrl } from '../../../utils/storage-utils';
 
 export default function StudentCredentialPage() {
   const { user } = useAuth();
@@ -18,34 +22,48 @@ export default function StudentCredentialPage() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const credentialRef = React.useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchCredential = async () => {
-      if (user) {
-        try {
-          // Verificar se o aluno já tem uma credencial
-          const existingCredential = await getStudentCredential(user.id);
-          
-          if (existingCredential) {
-            setCredential(existingCredential);
-          } else {
-            // Verificar elegibilidade para emissão de credencial
-            const eligible = await checkCredentialEligibility(user.id);
-            setIsEligible(eligible);
-          }
-        } catch (error) {
-          console.error('Erro ao buscar credencial:', error);
-        } finally {
-          setLoading(false);
-        }
+    async function loadCredential() {
+      if (!user) {
+        router.push('/login');
+        return;
       }
-    };
 
-    fetchCredential();
-  }, [user]);
+      try {
+        setLoading(true);
+        
+        // Verificar elegibilidade
+        const eligible = await checkCredentialEligibility(user.id);
+        setIsEligible(eligible);
+        
+        if (!eligible) {
+          setLoading(false);
+          return;
+        }
+        
+        // Buscar credencial existente
+        const existingCredential = await getStudentCredential(user.id);
+        
+        if (existingCredential) {
+          setCredential(existingCredential);
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar credencial:', error);
+        setError('Não foi possível carregar sua credencial. Tente novamente mais tarde.');
+        setLoading(false);
+      }
+    }
+    
+    loadCredential();
+  }, [user, router]);
 
   const handleGenerateCredential = async () => {
     if (!user) return;
@@ -60,7 +78,6 @@ export default function StudentCredentialPage() {
       const newCredential = await upsertStudentCredential({
         studentId: user.id,
         photoUrl: photoUrl || user.avatar_url || '/images/avatars/avatar-1.png',
-        qrCodeData,
         issueDate: new Date().toISOString(),
         expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
         status: 'active'
@@ -69,11 +86,16 @@ export default function StudentCredentialPage() {
       setCredential(newCredential);
     } catch (error) {
       console.error('Erro ao gerar credencial:', error);
+      setError('Não foi possível gerar sua credencial. Tente novamente mais tarde.');
     } finally {
       setGenerating(false);
     }
   };
 
+  const handlePrintCredential = () => {
+    window.print();
+  };
+  
   const handleStartCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -85,6 +107,7 @@ export default function StudentCredentialPage() {
       }
     } catch (error) {
       console.error('Erro ao acessar câmera:', error);
+      setError('Não foi possível acessar a câmera. Verifique as permissões do navegador.');
     }
   };
 
@@ -155,38 +178,36 @@ export default function StudentCredentialPage() {
       setPhotoUrl(publicUrl);
     } catch (error: any) {
       console.error('Erro ao fazer upload da foto:', error);
-      // Display error message to user
-      alert(`Erro ao fazer upload da foto: ${error.message}`);
+      setError(`Erro ao fazer upload da foto: ${error.message}`);
     }
   };
 
-  const handlePrintCredential = () => {
-    if (credentialRef.current) {
-      window.print();
-    }
-  };
-
-  const handleDownloadPDF = async () => {
-    if (credentialRef.current) {
-      try {
-        const { jsPDF } = await import('jspdf');
-        const html2canvas = await import('html2canvas');
-        
-        const element = credentialRef.current;
-        const canvas = await html2canvas.default(element, { scale: 2 });
-        const imgData = canvas.toDataURL('image/png');
-        
-        const pdf = new jsPDF({
-          orientation: 'landscape',
-          unit: 'mm',
-          format: [85, 54] // Tamanho padrão de cartão de crédito
-        });
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, 85, 54);
-        pdf.save('credencial-estudante.pdf');
-      } catch (error) {
-        console.error('Erro ao gerar PDF:', error);
-      }
+  const handleDownloadCredential = async () => {
+    const credentialElement = document.getElementById('student-credential');
+    if (!credentialElement) return;
+    
+    try {
+      const canvas = await html2canvas(credentialElement, {
+        logging: false,
+        useCORS: true
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      // Calcular dimensões para centralizar na página
+      const imgWidth = 210 - 40; // A4 width - margins
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+      pdf.save(`credencial-${user?.name ? user.name.replace(/\s+/g, '-').toLowerCase() : 'estudante'}.pdf`);
+    } catch (error) {
+      console.error('Erro ao baixar credencial:', error);
+      setError('Não foi possível baixar sua credencial. Tente novamente mais tarde.');
     }
   };
 
@@ -206,14 +227,17 @@ export default function StudentCredentialPage() {
         <div className="flex flex-col items-center">
           <div 
             ref={credentialRef}
+            id="student-credential"
             className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md p-6 border-2 border-indigo-500 print:border-none"
           >
             <div className="flex flex-col items-center">
               <div className="mb-4 w-24 h-24 rounded-full overflow-hidden border-2 border-indigo-500">
-                <img 
+                <Image 
                   src={credential.photoUrl || '/images/avatars/avatar-1.png'} 
                   alt="Foto do estudante" 
                   className="w-full h-full object-cover"
+                  width={96}
+                  height={96}
                 />
               </div>
               
@@ -222,7 +246,7 @@ export default function StudentCredentialPage() {
               <p className="text-sm text-gray-500 mb-4">ID: {user?.id}</p>
               
               <div className="mb-4">
-                <QRCode 
+                <QRCodeSVG 
                   value={credential.qrCodeData} 
                   size={128}
                   level="H"
@@ -261,7 +285,7 @@ export default function StudentCredentialPage() {
             </button>
             
             <button
-              onClick={handleDownloadPDF}
+              onClick={handleDownloadCredential}
               className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
             >
               <Download className="w-4 h-4 mr-2" />
@@ -281,10 +305,12 @@ export default function StudentCredentialPage() {
               {photoUrl ? (
                 <div className="mb-6">
                   <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-indigo-500 mx-auto">
-                    <img 
+                    <Image 
                       src={photoUrl} 
                       alt="Foto para credencial" 
                       className="w-full h-full object-cover"
+                      width={128}
+                      height={128}
                     />
                   </div>
                   <button
@@ -370,6 +396,12 @@ export default function StudentCredentialPage() {
                 Você ainda não é elegível para emitir sua credencial de estudante. 
                 Para ser elegível, é necessário ter documentação completa e pelo menos um pagamento realizado.
               </p>
+              <button 
+                onClick={() => router.push('/student/profile')}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+              >
+                Completar Perfil
+              </button>
             </div>
           )}
         </div>

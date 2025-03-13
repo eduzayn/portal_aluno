@@ -3,24 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --primary: 210 100% 50%;        /* Blue */
-  --primary-foreground: 0 0% 100%; /* White */
-  --secondary: 330 100% 60%;       /* Pink */
-  --secondary-foreground: 0 0% 100%; /* White */
-  --accent: 330 80% 50%;           /* Darker Pink */
-  --accent-foreground: 0 0% 100%;  /* White */
-  --background: 0 0% 100%;         /* White */
-  --foreground: 0 0% 0%;           /* Black */
-  --muted: 210 40% 96%;            /* Light Blue */
-  --muted-foreground: 0 0% 40%;    /* Dark Gray */
-  --border: 0 0% 90%;              /* Light Gray */
-  --input: 0 0% 90%;               /* Light Gray */
-  --ring: 210 100% 50%;            /* Blue */
+  --primary: 238 100% 67%; /* Indigo */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 262 83% 58%; /* Purple */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 199 89% 48%; /* Blue */
+  --accent-foreground: 0 0% 100%;
+  --background: 210 40% 98%; /* Slate-50 */
+  --foreground: 222 47% 11%; /* Gray-900 */
+  --muted: 210 40% 96%; /* Slate-100 */
+  --muted-foreground: 215 16% 47%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 238 100% 67%;
 }
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-slate-50 text-gray-900;
   }
 }
 
@@ -52,5 +52,38 @@
   
   .gradient-card-hover {
     @apply transition-all duration-300 bg-white hover:bg-gradient-to-b hover:from-white hover:to-muted;
+  }
+  
+  /* New gradient utility classes */
+  .sidebar-item {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .sidebar-item:hover {
+    @apply bg-gradient-to-r from-indigo-50 to-transparent;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-gradient-to-r from-indigo-100 to-transparent border-r-4 border-indigo-600 text-indigo-700;
+  }
+  
+  .status-card {
+    @apply rounded-xl p-4 transition-all duration-200;
+  }
+  
+  .status-card-red {
+    @apply bg-red-50;
+  }
+  
+  .status-card-blue {
+    @apply bg-blue-50;
+  }
+  
+  .status-card-green {
+    @apply bg-green-50;
+  }
+  
+  .status-card-purple {
+    @apply bg-purple-50;
   }
 }

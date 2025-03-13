@@ -8,10 +8,24 @@ import { supabase } from '../../lib/supabase'
 // Mock the supabase module
 jest.mock('../../lib/supabase')
 
-// Mock the next/navigation module
+// Mock Next.js navigation
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn().mockReturnValue({
+  useRouter: () => ({
     push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    back: jest.fn(),
+  }),
+  usePathname: () => '/current-path',
+  useSearchParams: () => new URLSearchParams(),
+}))
+
+// Mock AuthContext
+jest.mock('../../contexts/AuthContext', () => ({
+  useAuth: () => ({
+    login: jest.fn().mockResolvedValue({ success: true }),
+    isAuthenticated: false,
+    isLoading: false,
   }),
 }))
 
@@ -23,12 +37,14 @@ describe('LoginPage', () => {
   it('renders login form', () => {
     render(<LoginPage />)
     
+    // Check for form elements with both approaches
+    expect(screen.getByTestId('login-form')).toBeInTheDocument()
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/senha/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /entrar/i })).toBeInTheDocument()
   })
 
-  it('handles successful login', async () => {
+  it('handles successful login with Supabase', async () => {
     const mockRouter = { push: jest.fn() }
     require('next/navigation').useRouter.mockReturnValue(mockRouter)
     

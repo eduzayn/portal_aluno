@@ -110,16 +110,24 @@ export async function GET(request: NextRequest) {
     // Check if credential is expired or revoked
     if (data.status !== 'active') {
       return NextResponse.json(
-        { valid: false, message: 'Credencial inválida ou expirada', status: data.status },
-        { status: 401 }
+        { 
+          valid: false,
+          status: data.status,
+          message: 'Esta credencial não está mais ativa'
+        },
+        { status: 200 }
       );
     }
     
     // Check expiry date
     if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
       return NextResponse.json(
-        { valid: false, message: 'Credencial expirada', status: 'expired' },
-        { status: 401 }
+        { 
+          valid: false,
+          status: 'expired',
+          message: 'Esta credencial está expirada'
+        },
+        { status: 200 }
       );
     }
     
@@ -127,16 +135,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       valid: true,
       student: {
-        name: data.students.name,
-        email: data.students.email,
+        name: data.students?.name || 'Estudante',
+        email: data.students?.email || 'email@exemplo.com',
+        id: data.student_id,
         issueDate: data.issue_date,
         expiryDate: data.expiry_date
       }
     });
   } catch (error) {
-    console.error('Error validating credential:', error);
+    console.error('Erro ao validar credencial:', error);
     return NextResponse.json(
-      { valid: false, message: 'Erro ao validar credencial' },
+      { error: 'Erro ao processar a solicitação' },
       { status: 500 }
     );
   }

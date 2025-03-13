@@ -7,6 +7,7 @@ import { STORAGE_BUCKETS } from '../../../config/storage-buckets';
 import { uploadFile, getPublicUrl } from '../../../utils/storage-utils';
 import { uploadUserAvatar } from '../../../utils/profile-utils';
 import { Camera, Upload, User } from 'lucide-react';
+import Image from 'next/image';
 
 export default function ProfilePage() {
   const { user, refreshUserData } = useAuth();
@@ -111,10 +112,12 @@ export default function ProfilePage() {
           <div className="mb-6">
             {avatarUrl ? (
               <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-indigo-500 mx-auto">
-                <img 
+                <Image 
                   src={avatarUrl} 
                   alt="Avatar do usuário" 
                   className="w-full h-full object-cover"
+                  width={128}
+                  height={128}
                 />
               </div>
             ) : (

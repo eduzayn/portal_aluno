@@ -1,4 +1,4 @@
-import { Student, Course, Certificate, StudentCredential, AcademicDocument, FinancialRecord } from './types';
+import { Student, Course, Certificate, StudentCredential, AcademicDocument, FinancialRecord, LearningPath, Module, Lesson } from './types';
 
 export const getStudentProfile = async (): Promise<Student> => {
   return {
@@ -210,6 +210,9 @@ export const getAcademicDocuments = async (studentId: string, documentType?: 'gr
 /**
  * Mock financial records data
  */
+// Alias for getStudentCourses to maintain compatibility
+export const getStudentCourses = getCourses;
+
 export const getFinancialRecords = async (studentId: string): Promise<FinancialRecord[]> => {
   return [
     {
@@ -239,5 +242,102 @@ export const getFinancialRecords = async (studentId: string): Promise<FinancialR
       status: 'pending',
       receiptUrl: null
     }
+  ];
+};
+
+/**
+ * Mock learning paths data
+ */
+export const getLearningPaths = async (): Promise<LearningPath[]> => {
+  return [
+    {
+      id: 'path1',
+      title: 'Desenvolvimento Web Full Stack',
+      description: 'Aprenda a desenvolver aplicações web completas, do front-end ao back-end.',
+      modules: [
+        {
+          id: 'module1',
+          title: 'Fundamentos de HTML e CSS',
+          description: 'Aprenda os conceitos básicos de HTML e CSS para criar páginas web.',
+          duration: '2 semanas',
+          status: 'completed',
+          lessons: [
+            {
+              id: 'lesson1',
+              title: 'Introdução ao HTML',
+              description: 'Aprenda a estrutura básica de um documento HTML.',
+              duration: '30 min',
+              type: 'video',
+              status: 'completed',
+            },
+            {
+              id: 'lesson2',
+              title: 'Estilização com CSS',
+              description: 'Aprenda a estilizar elementos HTML com CSS.',
+              duration: '45 min',
+              type: 'video',
+              status: 'completed',
+            },
+          ],
+        },
+        {
+          id: 'module2',
+          title: 'JavaScript Básico',
+          description: 'Aprenda os fundamentos da linguagem JavaScript.',
+          duration: '3 semanas',
+          status: 'in_progress',
+          lessons: [
+            {
+              id: 'lesson3',
+              title: 'Variáveis e Tipos de Dados',
+              description: 'Aprenda sobre variáveis e tipos de dados em JavaScript.',
+              duration: '40 min',
+              type: 'video',
+              status: 'completed',
+            },
+            {
+              id: 'lesson4',
+              title: 'Funções e Escopo',
+              description: 'Aprenda sobre funções e escopo em JavaScript.',
+              duration: '50 min',
+              type: 'video',
+              status: 'in_progress',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'path2',
+      title: 'Desenvolvimento Mobile com React Native',
+      description: 'Aprenda a desenvolver aplicativos móveis para iOS e Android com React Native.',
+      modules: [
+        {
+          id: 'module3',
+          title: 'Fundamentos do React',
+          description: 'Aprenda os conceitos básicos do React antes de iniciar com React Native.',
+          duration: '2 semanas',
+          status: 'not_started',
+          lessons: [
+            {
+              id: 'lesson5',
+              title: 'Componentes e Props',
+              description: 'Aprenda sobre componentes e props no React.',
+              duration: '35 min',
+              type: 'video',
+              status: 'not_started',
+            },
+            {
+              id: 'lesson6',
+              title: 'Estado e Ciclo de Vida',
+              description: 'Aprenda sobre estado e ciclo de vida no React.',
+              duration: '45 min',
+              type: 'video',
+              status: 'not_started',
+            },
+          ],
+        },
+      ],
+    },
   ];
 };
