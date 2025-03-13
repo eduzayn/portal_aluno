@@ -12,46 +12,39 @@ const intlMiddleware = createIntlMiddleware({
 });
 
 export async function middleware(req: NextRequest) {
-  // First, handle internationalization
-  const intlResult = intlMiddleware(req);
+  // Check for public routes that don't need authentication
+  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/api'];
+  const url = req.nextUrl.clone();
+  const path = url.pathname;
   
-  // If the result is a redirect (e.g., for locale prefixing), return it
-  if (intlResult instanceof Response && intlResult.status !== 200) {
-    return intlResult;
+  // Allow public routes without authentication
+  if (publicRoutes.some(route => path.startsWith(route))) {
+    return NextResponse.next();
   }
   
+  // Check for temporary user cookie
+  if (req.cookies.has('portal_aluno_temp_user')) {
+    console.log('Middleware: Temporary user cookie found, allowing access');
+    return NextResponse.next();
+  }
+  
+  // Check for Supabase authentication
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
+  const { data: { session } } = await supabase.auth.getSession();
   
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  // Verificar se o usuário está autenticado para rotas protegidas
-  if (!session && (
-    req.nextUrl.pathname.startsWith('/student') ||
-    req.nextUrl.pathname.startsWith('/admin')
-  )) {
-    const redirectUrl = new URL('/login', req.url);
-    redirectUrl.searchParams.set('redirect', req.nextUrl.pathname);
-    return NextResponse.redirect(redirectUrl);
+  // If no session and not on a public route, redirect to login
+  if (!session && !publicRoutes.some(route => path.startsWith(route))) {
+    console.log('Middleware: No session found, redirecting to login');
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
   }
-
-  // Redirecionar usuários autenticados da página de login para o dashboard
-  if (session && (
-    req.nextUrl.pathname === '/login' ||
-    req.nextUrl.pathname === '/register' ||
-    req.nextUrl.pathname === '/forgot-password' ||
-    req.nextUrl.pathname === '/'
-  )) {
-    return NextResponse.redirect(new URL('/student/dashboard', req.url));
-  }
-
-  return intlResult;
+  
+  return res;
 }
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
