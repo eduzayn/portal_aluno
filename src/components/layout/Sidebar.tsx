@@ -15,7 +15,9 @@ import {
   BookOpen,
   User,
   Tag,
-  File
+  File,
+  MessageSquare,
+  Bell
 } from 'lucide-react';
 
 // Module-specific configuration
@@ -108,13 +110,17 @@ export const Sidebar = ({ module = 'student', navItems }: SidebarProps) => {
   
   // Use translated routes if translations are available
   const studentRoutesWithTranslations = [
-    { path: '/aluno/dashboard', name: t('dashboard'), icon: <Home size={20} /> },
-    { path: '/aluno/cursos', name: t('courses'), icon: <File size={20} /> },
-    { path: '/aluno/aulas', name: t('classes'), icon: <FileText size={20} /> },
-    { path: '/aluno/notas', name: t('grades'), icon: <BarChart2 size={20} /> },
-    { path: '/aluno/financeiro', name: t('financial'), icon: <CreditCard size={20} /> },
-    { path: '/aluno/certificados', name: t('certificates'), icon: <FileText size={20} /> },
-    { path: '/aluno/perfil', name: t('profile'), icon: <User size={20} /> },
+    { path: '/student/dashboard', name: t('dashboard'), icon: <Home size={20} className="text-blue-500" /> },
+    { path: '/student/courses', name: t('courses'), icon: <BookOpen size={20} className="text-green-500" /> },
+    { path: '/student/learning-path', name: t('classes'), icon: <GraduationCap size={20} className="text-purple-500" /> },
+    { path: '/student/grades', name: t('grades'), icon: <BarChart2 size={20} className="text-amber-500" /> },
+    { path: '/student/financial', name: t('financial'), icon: <CreditCard size={20} className="text-emerald-500" /> },
+    { path: '/student/certificates', name: t('certificates'), icon: <FileText size={20} className="text-indigo-500" /> },
+    { path: '/student/credential', name: 'Credencial', icon: <Tag size={20} className="text-rose-500" /> },
+    { path: '/student/documents', name: 'Documentos', icon: <File size={20} className="text-orange-500" /> },
+    { path: '/student/messages', name: 'Mensagens', icon: <MessageSquare size={20} className="text-cyan-500" /> },
+    { path: '/student/notifications', name: 'Notificações', icon: <Bell size={20} className="text-violet-500" /> },
+    { path: '/student/profile', name: t('profile'), icon: <User size={20} className="text-pink-500" /> },
   ];
   
   // Override student routes with translated versions
@@ -185,8 +191,9 @@ export const Sidebar = ({ module = 'student', navItems }: SidebarProps) => {
             className="h-16 flex items-center justify-center border-b border-neutral-200"
             style={{ background: config.color.gradient }}
           >
-            <h1 className="text-white font-bold text-xl">
-              {isTablet ? config.name.charAt(0) : config.name}
+            <h1 className="text-white font-bold text-xl flex items-center">
+              <GraduationCap size={24} className="mr-2" />
+              {isTablet ? '' : config.name}
             </h1>
           </div>
           
@@ -208,7 +215,7 @@ export const Sidebar = ({ module = 'student', navItems }: SidebarProps) => {
                         : {}
                     }
                   >
-                    <span className="flex-shrink-0" style={pathname === route.path ? { color: config.color.main } : {}}>
+                    <span className="flex-shrink-0">
                       {route.icon}
                     </span>
                     <span className={`ml-3 ${isTablet ? 'opacity-0 group-hover:opacity-100' : ''}`}>
@@ -232,8 +239,8 @@ export const Sidebar = ({ module = 'student', navItems }: SidebarProps) => {
           <div className="p-4 border-t border-neutral-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-semibold">
-                  A
+                <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                  <User size={16} />
                 </div>
                 <div className={`${isTablet ? 'hidden' : 'block'}`}>
                   <p className="text-sm font-medium">Aluno</p>
