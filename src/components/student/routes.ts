@@ -73,16 +73,7 @@ export const studentNavItems: RouteItem[] = [
     name: 'Documentos',
     icon: FileText,
   },
-  {
-    path: studentRoutes.credential,
-    name: 'Credencial',
-    icon: User,
-  },
-  {
-    path: studentRoutes.documents,
-    name: 'Documentos',
-    icon: FileCheck,
-  },
+  // Removed duplicate entries for Credencial and Documentos
   {
     path: studentRoutes.certificates,
     name: 'Certificados',

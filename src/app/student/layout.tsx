@@ -40,7 +40,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
               className={`sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg transition-all ${
                 pathname === item.path
                   ? 'gradient-blue-pink text-white font-medium shadow-md'
-                  : 'text-gray-700 hover:bg-muted hover:text-primary'
+                  : 'text-gray-700'
               }`}
             >
               <item.icon className="h-5 w-5" />
@@ -111,7 +111,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                   className={`sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg transition-all ${
                     pathname === item.path
                       ? 'gradient-blue-pink text-white font-medium shadow-md'
-                      : 'text-gray-700 hover:bg-muted hover:text-primary'
+                      : 'text-gray-700'
                   }`}
                   onClick={toggleSidebar}
                 >
