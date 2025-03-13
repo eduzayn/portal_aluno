@@ -5,7 +5,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { getAcademicDocuments } from '../../../components/student/supabase-data';
 import { AcademicDocument } from '../../../components/student/types';
 import { useRouter } from 'next/navigation';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/Tabs';
 import { Download, Printer, FileText, Calendar, Clock } from 'lucide-react';
 
 export default function DocumentsPage() {
