@@ -5,7 +5,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getStudentCredential, checkCredentialEligibility, upsertStudentCredential } from '@/components/student/mock-data';
 import { StudentCredential } from '@/components/student/types';
 import QRCode from 'qrcode.react';
-import { Camera, Download, Printer, RefreshCw } from 'lucide-react';
+import { Camera, Download, Printer, RefreshCw, Upload } from 'lucide-react';
+import { STORAGE_BUCKETS } from '@/config/storage-buckets';
+import { uploadFile, getPublicUrl } from '@/utils/storage-utils';
 
 export default function StudentCredentialPage() {
   const { user } = useAuth();
@@ -97,16 +99,64 @@ export default function StudentCredentialPage() {
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        const photoDataUrl = canvas.toDataURL('image/png');
-        setPhotoUrl(photoDataUrl);
-        setShowCamera(false);
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const file = new File([blob], `credential-${Date.now()}.png`, { type: 'image/png' });
+            await uploadCredentialPhoto(file);
+          }
+        }, 'image/png');
         
         // Parar a câmera
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
           setCameraStream(null);
         }
+        
+        setShowCamera(false);
       }
+    }
+  };
+  
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0 || !user) {
+      return;
+    }
+    
+    const file = e.target.files[0];
+    await uploadCredentialPhoto(file);
+  };
+  
+  const uploadCredentialPhoto = async (file: File) => {
+    if (!user) return;
+    
+    try {
+      // Definir o caminho do arquivo no bucket
+      const filePath = `credential-${user.id}/${Date.now()}-${file.name}`;
+      
+      // Fazer upload do arquivo para o bucket Avatars com validação
+      const { data, error } = await uploadFile(
+        STORAGE_BUCKETS.AVATARS, 
+        filePath, 
+        file,
+        {
+          allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+          maxSizeInBytes: 5 * 1024 * 1024 // 5MB
+        }
+      );
+      
+      if (error) {
+        throw error;
+      }
+      
+      // Obter a URL pública do arquivo
+      const publicUrl = getPublicUrl(STORAGE_BUCKETS.AVATARS, filePath);
+      
+      // Atualizar o estado local
+      setPhotoUrl(publicUrl);
+    } catch (error: any) {
+      console.error('Erro ao fazer upload da foto:', error);
+      // Display error message to user
+      alert(`Erro ao fazer upload da foto: ${error.message}`);
     }
   };
 
@@ -264,13 +314,30 @@ export default function StudentCredentialPage() {
                       <canvas ref={canvasRef} className="hidden" />
                     </div>
                   ) : (
-                    <button
-                      onClick={handleStartCamera}
-                      className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                    >
-                      <Camera className="w-4 h-4 mr-2" />
-                      Tirar Foto
-                    </button>
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={handleStartCamera}
+                        className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                      >
+                        <Camera className="w-4 h-4 mr-2" />
+                        Tirar Foto
+                      </button>
+                      
+                      <input 
+                        type="file" 
+                        id="credential-photo" 
+                        className="hidden" 
+                        accept="image/*" 
+                        onChange={handleFileUpload} 
+                      />
+                      <button
+                        onClick={() => document.getElementById('credential-photo')?.click()}
+                        className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload Foto
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
