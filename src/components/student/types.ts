@@ -30,6 +30,7 @@ export interface Course {
   rating: number;
   enrollmentDate: string;
   lastAccessed: string | null;
+  modules?: Module[];
 }
 
 export interface Certificate {
@@ -38,6 +39,7 @@ export interface Certificate {
   courseName: string;
   issueDate: string;
   downloadUrl: string;
+  title?: string;
 }
 
 export interface StudentCredential {
@@ -75,4 +77,29 @@ export interface FinancialRecord {
   paymentDate: Date | null;
   status: 'paid' | 'pending' | 'overdue';
   receiptUrl: string | null;
+}
+
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  modules: Module[];
+}
+
+export interface Module {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  status: 'completed' | 'in_progress' | 'not_started' | 'locked';
+  lessons: Lesson[];
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  type: 'video' | 'reading' | 'quiz' | 'assignment';
+  status: 'completed' | 'in_progress' | 'not_started' | 'locked';
 }

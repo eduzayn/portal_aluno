@@ -1,6 +1,9 @@
 import { supabase } from '../../lib/supabase'
-import { Student, Course, Module, Lesson, Certificate, FinancialRecord } from './types'
-import { getStudentProfile as getMockStudentProfile, getStudentCourses as getMockStudentCourses } from './mock-data'
+import { Student, Course, Certificate, FinancialRecord } from './types'
+import { getStudentProfile as getMockStudentProfile, getCourses } from './mock-data'
+
+// Alias for getCourses to maintain compatibility
+const getMockStudentCourses = getCourses
 
 /**
  * Fetch student profile from Supabase
