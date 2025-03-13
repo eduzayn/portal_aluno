@@ -10,6 +10,7 @@ interface AuthContextType extends AuthState {
   register: (credentials: RegisterCredentials) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
+  refreshUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -94,12 +95,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Check for temporary user credentials
       if (credentials.email === 'teste@edunexia.com.br' && credentials.password === 'Teste@123') {
         // Create a temporary user profile
-        const tempUser = {
+        const tempUser: UserProfile = {
           id: 'temp-user-id',
           email: 'teste@edunexia.com.br',
           name: 'Usuário Temporário',
-          role: 'admin' as const,
-          avatar_url: null,
+          role: 'admin',
+          avatar_url: undefined,
         };
         
         // Update state with temporary user
@@ -189,9 +190,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { success: false, error: error.message };
     }
   };
+  
+  const refreshUserData = async () => {
+    if (!state.user) return;
+    
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', state.user.id)
+        .single();
+        
+      if (profile) {
+        setState({
+          ...state,
+          user: {
+            ...state.user,
+            name: profile.name || state.user.email.split('@')[0],
+            role: profile.role || 'student',
+            avatar_url: profile.avatar_url,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar dados do usuário:', error);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout, resetPassword }}>
+    <AuthContext.Provider value={{ ...state, login, register, logout, resetPassword, refreshUserData }}>
       {children}
     </AuthContext.Provider>
   );
