@@ -1,7 +1,11 @@
 import { jest } from '@jest/globals'
 import '@testing-library/jest-dom'
-import { getStudentProfile, getStudentCourses, getLearningPath } from './supabase-data'
 import { supabase } from '../../lib/supabase'
+import {
+  getStudentProfile,
+  getStudentCourses,
+  getLearningPath
+} from './supabase-data'
 import { getStudentProfile as getMockStudentProfile, getStudentCourses as getMockStudentCourses } from './mock-data'
 
 // Mock the supabase module
@@ -22,21 +26,51 @@ jest.mock('./mock-data')
 describe('Supabase Data Service', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    
+    // Setup mock implementations
+    const mockFrom = jest.fn().mockReturnThis()
+    const mockSelect = jest.fn().mockReturnThis()
+    const mockEq = jest.fn().mockReturnThis()
+    const mockSingle = jest.fn().mockReturnThis()
+    const mockData = jest.fn()
+    const mockError = jest.fn()
+    
+    // Configure the supabase mock
+    ;(supabase.from as jest.Mock).mockImplementation(() => ({
+      select: mockSelect,
+      eq: mockEq,
+      single: mockSingle,
+      update: jest.fn().mockReturnThis(),
+      match: jest.fn().mockReturnThis(),
+      order: jest.fn().mockReturnThis(),
+      data: mockData,
+      error: mockError,
+    }))
   })
 
   describe('getStudentProfile', () => {
     it('returns data from Supabase when successful', async () => {
-      const mockData = { id: 'student-1', name: 'Test Student', certificates: [] }
+      const mockData = { 
+        id: 'student-1', 
+        name: 'Test Student', 
+        email: 'test@example.com',
+        enrollmentDate: '2023-01-15',
+        status: 'active'
+      }
+      
       ;(supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
-        single: jest.fn().mockResolvedValue({ data: mockData, error: null } as any),
+        single: jest.fn().mockResolvedValue({
+          data: mockData,
+          error: null
+        })
       })
 
       const result = await getStudentProfile('student-1')
       
       expect(result).toEqual(mockData)
-      expect(supabase.from).toHaveBeenCalledWith('students')
+      expect(supabase.from).toHaveBeenCalledWith('profiles')
     })
 
     it('falls back to mock data when Supabase fails', async () => {
@@ -46,7 +80,10 @@ describe('Supabase Data Service', () => {
       ;(supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
-        single: jest.fn().mockResolvedValue({ data: null, error: mockError }),
+        single: jest.fn().mockResolvedValue({
+          data: null,
+          error: mockError
+        })
       })
       
       ;(getMockStudentProfile as jest.Mock).mockResolvedValue(mockData)
@@ -61,13 +98,17 @@ describe('Supabase Data Service', () => {
   describe('getStudentCourses', () => {
     it('returns data from Supabase when successful', async () => {
       const mockData = [{ id: 'course-1', title: 'Test Course', modules: [] }]
+      
       ;(supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
         in: jest.fn().mockReturnThis(),
         order: jest.fn().mockReturnThis(),
         single: jest.fn().mockReturnThis(),
-        mockResolvedValue: jest.fn().mockResolvedValue({ data: mockData, error: null }),
+        mockResolvedValue: jest.fn().mockResolvedValue({
+          data: mockData,
+          error: null
+        })
       })
 
       const result = await getStudentCourses('student-1')
@@ -84,7 +125,10 @@ describe('Supabase Data Service', () => {
       ;(supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
-        mockResolvedValue: jest.fn().mockResolvedValue({ data: null, error: mockError }),
+        mockResolvedValue: jest.fn().mockResolvedValue({
+          data: null,
+          error: mockError
+        })
       })
       
       ;(getMockStudentCourses as jest.Mock).mockResolvedValue(mockData)
@@ -101,7 +145,10 @@ describe('Supabase Data Service', () => {
       ;(supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
-        mockResolvedValue: jest.fn().mockResolvedValue({ data: [], error: null }),
+        mockResolvedValue: jest.fn().mockResolvedValue({
+          data: [],
+          error: null
+        })
       })
 
       const result = await getLearningPath('student-1')

@@ -10,11 +10,16 @@ jest.mock('../../../components/student/mock-data', () => ({
   getLearningPaths: jest.fn(),
 }))
 
-// Mock the next/navigation module
+// Mock Next.js navigation
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn().mockReturnValue({
+  useRouter: () => ({
     push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    back: jest.fn(),
   }),
+  usePathname: () => '/current-path',
+  useSearchParams: () => new URLSearchParams(),
 }))
 
 describe('LearningPathPage', () => {
