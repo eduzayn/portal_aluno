@@ -87,29 +87,24 @@ export const Sidebar = ({ module = 'student', navItems }: SidebarProps) => {
   const [isTablet, setIsTablet] = useState(false);
   const pathname = usePathname();
   
-  // Get translations if available
-  let t;
-  try {
-    // Import from next-intl if available
-    const { useTranslations } = require('next-intl');
-    t = useTranslations('sidebar');
-  } catch (error) {
-    // Fallback for when translations are not available
-    t = (key: string) => {
-      const translations: Record<string, string> = {
-        dashboard: 'Dashboard',
-        courses: 'Cursos',
-        classes: 'Aulas',
-        grades: 'Notas',
-        certificates: 'Certificados',
-        financial: 'Financeiro',
-        profile: 'Perfil',
-        language: 'Idioma',
-        logout: 'Sair'
-      };
-      return translations[key] || key;
+  // Translation function
+  const getTranslation = (key: string) => {
+    const translations: Record<string, string> = {
+      dashboard: 'Dashboard',
+      courses: 'Cursos',
+      classes: 'Aulas',
+      grades: 'Notas',
+      certificates: 'Certificados',
+      financial: 'Financeiro',
+      profile: 'Perfil',
+      language: 'Idioma',
+      logout: 'Sair'
     };
-  }
+    return translations[key] || key;
+  };
+  
+  // Use translations
+  const t = getTranslation;
   
   // Use translated routes if translations are available
   const studentRoutesWithTranslations = [
