@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { BarChart2, BookOpen, Award, Bell, MessageSquare } from 'lucide-react'
-import { getStudentProfile, getStudentCourses } from '../../../components/student/supabase-data'
-import { supabase } from '../../../lib/supabase'
+import { getStudentProfile, getStudentCourses } from '../../../components/student/mock-data'
 import { Student, Course } from '../../../components/student/types'
 import { CourseCard } from '../../../components/student/course-card'
 
@@ -17,14 +16,6 @@ export default function StudentDashboardPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        // Check if user is authenticated
-        const { data: authData } = await supabase.auth.getSession()
-        
-        if (!authData.session) {
-          // For development, we'll continue without redirecting
-          console.log('No authenticated session, using mock data')
-        }
-        
         const studentData = await getStudentProfile()
         const coursesData = await getStudentCourses()
         setStudent(studentData)
@@ -37,7 +28,7 @@ export default function StudentDashboardPage() {
     }
 
     loadData()
-  }, [router])
+  }, [])
 
   const handleContinueCourse = (courseId: string) => {
     router.push(`/student/courses/${courseId}`)
@@ -60,8 +51,8 @@ export default function StudentDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4">
-      <h1 className="text-3xl font-bold mb-6 text-foreground">Dashboard</h1>
+    <div className="container mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
       
       {/* Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -94,8 +85,8 @@ export default function StudentDashboardPage() {
       </div>
       
       {/* Cursos em andamento */}
-      <div className="mb-6 md:mb-8">
-        <div className="flex items-center justify-between mb-3 md:mb-4">
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Cursos em Andamento</h2>
           <button 
             className="btn-outline text-sm"
@@ -105,7 +96,7 @@ export default function StudentDashboardPage() {
           </button>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses
             .filter(course => course.status.includes('progress'))
             .slice(0, 3)
