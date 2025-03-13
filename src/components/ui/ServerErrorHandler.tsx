@@ -4,6 +4,7 @@ import React from 'react';
 interface ServerErrorHandlerProps {
   error: Error;
   reset: () => void;
+  module?: string;
 }
 
 const ServerErrorHandler: React.FC<ServerErrorHandlerProps> = ({ error, reset }) => {

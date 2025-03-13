@@ -30,6 +30,12 @@ export const colors = {
       gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
     }
   },
+  semantic: {
+    success: '#10B981',
+    warning: '#F59E0B',
+    error: '#EF4444',
+    info: '#3B82F6'
+  },
   secondary: {
     main: '#6B7280',
     light: '#D1D5DB',
