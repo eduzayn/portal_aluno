@@ -19,8 +19,9 @@ export default function DocumentsPage() {
 
   useEffect(() => {
     async function loadDocuments() {
-      if (!user) {
-        router.push('/login');
+      if (!user || !user.id) {
+        // Mostrar estado de carregamento em vez de redirecionar imediatamente
+        setLoading(true);
         return;
       }
 
@@ -38,7 +39,7 @@ export default function DocumentsPage() {
     }
     
     loadDocuments();
-  }, [user, router]);
+  }, [user]);
 
   useEffect(() => {
     if (activeTab === 'all') {

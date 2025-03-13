@@ -30,8 +30,9 @@ export default function StudentCredentialPage() {
 
   useEffect(() => {
     async function loadCredential() {
-      if (!user) {
-        router.push('/login');
+      if (!user || !user.id) {
+        // Mostrar estado de carregamento em vez de redirecionar imediatamente
+        setLoading(true);
         return;
       }
 
@@ -63,7 +64,7 @@ export default function StudentCredentialPage() {
     }
     
     loadCredential();
-  }, [user, router]);
+  }, [user]);
 
   const handleGenerateCredential = async () => {
     if (!user) return;
