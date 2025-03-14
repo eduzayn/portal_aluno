@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'Portal do Aluno - Edunéxia',
-  description: 'Portal do Aluno para a plataforma educacional Edunéxia',
+  description: 'Portal do Aluno da Edunéxia',
 }
 
 export default function RootLayout({
