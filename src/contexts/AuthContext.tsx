@@ -124,12 +124,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (credentials.email === 'teste@edunexia.com.br' && credentials.password === 'Teste@123') {
         console.log('Using test credentials, creating temporary user session');
         
-        // Create a temporary user profile
+        // Create a temporary user profile with admin role
         const tempUser: UserProfile = {
           id: 'temp-user-id',
           email: 'teste@edunexia.com.br',
           name: 'Usuário Temporário',
-          role: 'student',
+          role: 'admin',
           avatar_url: undefined,
         };
         
