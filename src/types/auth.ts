@@ -6,10 +6,13 @@ export interface UserProfile {
   avatar_url?: string;
 }
 
+import { AccessLevel } from './payment-access';
+
 export interface AuthState {
   user: UserProfile | null;
   loading: boolean;
   error: string | null;
+  accessLevel: AccessLevel;
 }
 
 export interface LoginCredentials {

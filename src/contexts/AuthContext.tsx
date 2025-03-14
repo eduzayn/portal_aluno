@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { AuthState, LoginCredentials, RegisterCredentials, UserProfile } from '../types/auth';
 import { useRouter } from 'next/navigation';
+import { paymentAccessService } from '../services/payment-access-service';
+import { AccessLevel } from '../types/payment-access';
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: string }>;
@@ -11,6 +13,8 @@ interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   refreshUserData: () => Promise<void>;
+  accessLevel: AccessLevel;
+  checkContentAccess: (contentType: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,6 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user: null,
     loading: true,
     error: null,
+    accessLevel: AccessLevel.FULL,
   });
   const router = useRouter();
 
@@ -35,6 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             user: tempUser,
             loading: false,
             error: null,
+            accessLevel: AccessLevel.FULL,
           });
           return;
         }
@@ -48,6 +54,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .select('*')
             .eq('id', user.id)
             .single();
+          
+          // Get access level
+          const accessLevel = await paymentAccessService.getAccessLevel(user.id);
             
           setState({
             user: {
@@ -59,13 +68,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             },
             loading: false,
             error: null,
+            accessLevel,
           });
         } else {
-          setState({ user: null, loading: false, error: null });
+          setState({ user: null, loading: false, error: null, accessLevel: AccessLevel.FULL });
         }
       } catch (error) {
         console.error('Erro ao verificar sessão:', error);
-        setState({ user: null, loading: false, error: null });
+        setState({ user: null, loading: false, error: null, accessLevel: AccessLevel.FULL });
       }
     };
 
@@ -78,6 +88,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           .select('*')
           .eq('id', session.user.id)
           .single();
+        
+        // Get access level
+        const accessLevel = await paymentAccessService.getAccessLevel(session.user.id);
           
         setState({
           user: {
@@ -89,9 +102,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           },
           loading: false,
           error: null,
+          accessLevel,
         });
       } else if (event === 'SIGNED_OUT') {
-        setState({ user: null, loading: false, error: null });
+        setState({ user: null, loading: false, error: null, accessLevel: AccessLevel.FULL });
       }
     });
 
@@ -124,6 +138,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           user: tempUser,
           loading: false,
           error: null,
+          accessLevel: AccessLevel.FULL,
         });
         
         // Store session in localStorage to persist across page loads
@@ -236,6 +251,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .select('*')
         .eq('id', state.user.id)
         .single();
+      
+      // Get access level
+      const accessLevel = await paymentAccessService.getAccessLevel(state.user.id);
         
       if (profile) {
         setState({
@@ -246,15 +264,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             role: profile.role || 'student',
             avatar_url: profile.avatar_url,
           },
+          accessLevel,
         });
       }
     } catch (error) {
       console.error('Erro ao atualizar dados do usuário:', error);
     }
   };
+  
+  const checkContentAccess = async (contentType: string): Promise<boolean> => {
+    if (!state.user) return false;
+    return await paymentAccessService.checkAccess(state.user.id, contentType);
+  };
 
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout, resetPassword, refreshUserData }}>
+    <AuthContext.Provider value={{ ...state, login, register, logout, resetPassword, refreshUserData, checkContentAccess }}>
       {children}
     </AuthContext.Provider>
   );
