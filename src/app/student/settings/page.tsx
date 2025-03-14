@@ -23,12 +23,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('notifications');
   
-  // Check if user is admin, if not redirect to dashboard
-  useEffect(() => {
-    if (user && user.role !== 'admin') {
-      router.push('/student/dashboard');
-    }
-  }, [user, router]);
+  // No redirect in useEffect, we'll use conditional rendering instead
   const [showPassword, setShowPassword] = useState({
     current: false,
     new: false,
