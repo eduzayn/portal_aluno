@@ -5,11 +5,14 @@ import { useRouter } from 'next/navigation'
 import { getCourses as getStudentCourses } from '../../../components/student/mock-data'
 import { Course } from '../../../components/student/types'
 import { CourseCard } from '../../../components/student/course-card'
+import { useAuth } from '../../../contexts/AuthContext'
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
+  const [hasAccess, setHasAccess] = useState<boolean>(true)
   const router = useRouter()
+  const { user, checkContentAccess } = useAuth()
 
   useEffect(() => {
     async function loadData() {
@@ -23,8 +26,20 @@ export default function CoursesPage() {
       }
     }
 
+    async function checkAccess() {
+      if (user) {
+        const canAccess = await checkContentAccess('courses')
+        setHasAccess(canAccess)
+        
+        if (!canAccess) {
+          router.push('/student/restricted-access')
+        }
+      }
+    }
+
     loadData()
-  }, [])
+    checkAccess()
+  }, [user, checkContentAccess, router])
 
   const handleContinueCourse = (courseId: string) => {
     router.push(`/student/courses/${courseId}`)
