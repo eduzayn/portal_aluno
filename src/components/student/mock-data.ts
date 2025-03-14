@@ -208,10 +208,13 @@ export const getAcademicDocuments = async (studentId: string, documentType?: 'gr
 };
 
 /**
+ * Alias for getCourses to maintain compatibility
+ */
+export const getStudentCourses = getCourses;
+
+/**
  * Mock financial records data
  */
-// Alias for getStudentCourses to maintain compatibility
-export const getStudentCourses = getCourses;
 
 export const getFinancialRecords = async (studentId: string): Promise<FinancialRecord[]> => {
   return [

@@ -87,3 +87,26 @@
     @apply bg-purple-50;
   }
 }
+
+/* Icon styles for the sidebar */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-weight: bold;
+  background-color: rgba(79, 70, 229, 0.1);
+  border-radius: 0.25rem;
+  color: #4f46e5;
+}
+
+.sidebar-item:hover .icon {
+  color: white;
+  background-color: transparent;
+}
+
+.sidebar-item[data-state="active"] .icon {
+  color: white;
+  background-color: transparent;
+}

@@ -1,13 +1,23 @@
+import React from 'react';
 import { 
-  BookOpen, Award, Bell, MessageSquare, User, 
-  Settings, FileCheck, BookMarked, CreditCard, BarChart2,
-  CreditCard as CardIcon, FileText
+  BookOpen, 
+  Award, 
+  Bell, 
+  MessageSquare, 
+  User, 
+  Settings, 
+  FileCheck, 
+  BookMarked, 
+  CreditCard, 
+  BarChart2,
+  Tag as CardIcon, 
+  FileText 
 } from 'lucide-react';
 
 export interface RouteItem {
   path: string;
   name: string;
-  icon: any;
+  icon: React.ReactNode;
 }
 
 export interface StudentRoutes {
@@ -46,62 +56,62 @@ export const studentNavItems: RouteItem[] = [
   {
     path: studentRoutes.dashboard,
     name: 'Dashboard',
-    icon: BarChart2,
+    icon: React.createElement(BarChart2, { size: 20, className: "text-blue-500" })
   },
   {
     path: studentRoutes.profile,
     name: 'Perfil',
-    icon: User,
+    icon: React.createElement(User, { size: 20, className: "text-pink-500" })
   },
   {
     path: studentRoutes.courses,
     name: 'Cursos',
-    icon: BookOpen,
+    icon: React.createElement(BookOpen, { size: 20, className: "text-green-500" })
   },
   {
     path: studentRoutes.learningPath,
     name: 'Rotas de Aprendizagem',
-    icon: BookMarked,
+    icon: React.createElement(BookMarked, { size: 20, className: "text-purple-500" })
   },
   {
     path: studentRoutes.credential,
     name: 'Credencial',
-    icon: CardIcon,
+    icon: React.createElement(CardIcon, { size: 20, className: "text-rose-500" })
   },
   {
     path: studentRoutes.documents,
     name: 'Documentos',
-    icon: FileText,
+    icon: React.createElement(FileText, { size: 20, className: "text-orange-500" })
   },
   // Removed duplicate entries for Credencial and Documentos
   {
     path: studentRoutes.certificates,
     name: 'Certificados',
-    icon: Award,
+    icon: React.createElement(Award, { size: 20, className: "text-indigo-500" })
   },
   {
     path: studentRoutes.grades,
     name: 'Notas',
-    icon: FileCheck,
+    icon: React.createElement(FileCheck, { size: 20, className: "text-amber-500" })
   },
   {
     path: studentRoutes.financial,
     name: 'Financeiro',
-    icon: CreditCard,
+    icon: React.createElement(CreditCard, { size: 20, className: "text-emerald-500" })
   },
   {
     path: studentRoutes.notifications,
     name: 'Notificações',
-    icon: Bell,
+    icon: React.createElement(Bell, { size: 20, className: "text-violet-500" })
   },
   {
     path: studentRoutes.messages,
     name: 'Mensagens',
-    icon: MessageSquare,
+    icon: React.createElement(MessageSquare, { size: 20, className: "text-cyan-500" })
   },
   {
     path: studentRoutes.settings,
     name: 'Configurações',
-    icon: Settings,
-  },
+    icon: React.createElement(Settings, { size: 20, className: "text-gray-500" })
+  }
 ];
