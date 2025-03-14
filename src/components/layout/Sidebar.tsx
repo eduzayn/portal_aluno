@@ -80,6 +80,7 @@ interface SidebarProps {
     path: string;
     name: string;
     icon: React.ReactNode;
+    adminOnly?: boolean;
   }>;
 }
 
@@ -121,15 +122,37 @@ export const Sidebar = ({ module = 'student', navItems }: SidebarProps) => {
     { path: '/student/messages', name: 'Mensagens', icon: <MessageSquare size={20} className="text-cyan-500" /> },
     { path: '/student/notifications', name: 'Notificações', icon: <Bell size={20} className="text-violet-500" /> },
     { path: '/student/profile', name: t('profile'), icon: <User size={20} className="text-pink-500" /> },
-    { path: '/student/settings', name: 'Configurações', icon: <Settings size={20} className="text-gray-500" /> },
+    { path: '/student/user-settings', name: 'Configurações da Conta', icon: <Settings size={20} className="text-gray-500" /> },
+    { path: '/student/settings', name: 'Configurações do Sistema', icon: <Settings size={20} className="text-indigo-500" />, adminOnly: true },
   ];
+  
+  // Get user role from localStorage
+  const [userRole, setUserRole] = useState<string | null>(null);
+  
+  useEffect(() => {
+    // Check for temporary user in localStorage
+    const tempUserJson = localStorage.getItem('portal_aluno_temp_user');
+    if (tempUserJson) {
+      try {
+        const tempUser = JSON.parse(tempUserJson);
+        setUserRole(tempUser.role);
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+    }
+  }, []);
+  
+  // Filter routes based on user role
+  const filteredRoutes = studentRoutesWithTranslations.filter(
+    route => !route.adminOnly || userRole === 'admin'
+  );
   
   // Override student routes with translated versions
   const updatedModuleConfig = {
     ...moduleConfig,
     student: {
       ...moduleConfig.student,
-      routes: studentRoutesWithTranslations
+      routes: filteredRoutes
     }
   };
   

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
-import { Bell, Moon, Sun, Globe, Lock, Eye, EyeOff, Save, AlertTriangle } from 'lucide-react';
+import { Bell, Moon, Sun, Globe, Lock, Eye, EyeOff, Save, AlertTriangle, Database, Server, Users, Sliders } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface SettingsOption {
@@ -18,12 +18,11 @@ interface PasswordForm {
   confirmPassword: string;
 }
 
-export default function SettingsPage() {
+export default function AdminSettingsPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('notifications');
+  const [activeTab, setActiveTab] = useState('system');
   
-  // No redirect in useEffect, we'll use conditional rendering instead
   const [showPassword, setShowPassword] = useState({
     current: false,
     new: false,
@@ -70,6 +69,15 @@ export default function SettingsPage() {
 
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+
+  // Admin-specific state
+  const [systemSettings, setSystemSettings] = useState({
+    maintenanceMode: false,
+    debugMode: false,
+    allowRegistration: true,
+    maxUploadSize: 10,
+    sessionTimeout: 30,
+  });
 
   const toggleNotificationSetting = (id: string) => {
     setNotificationSettings(
@@ -130,6 +138,13 @@ export default function SettingsPage() {
     });
   };
 
+  const handleSystemSettingChange = (setting: string, value: any) => {
+    setSystemSettings({
+      ...systemSettings,
+      [setting]: value,
+    });
+  };
+
   // If user is not admin, show access denied message
   if (user && user.role !== 'admin') {
     return (
@@ -145,10 +160,10 @@ export default function SettingsPage() {
         </div>
         <div className="text-center py-8">
           <button
-            onClick={() => router.push('/student/dashboard')}
+            onClick={() => router.push('/student/user-settings')}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Voltar para o Dashboard
+            Ir para Configurações do Usuário
           </button>
         </div>
       </div>

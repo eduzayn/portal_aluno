@@ -18,6 +18,7 @@ export interface RouteItem {
   path: string;
   name: string;
   icon: React.ReactNode;
+  adminOnly?: boolean;
 }
 
 export interface StudentRoutes {
@@ -28,6 +29,7 @@ export interface StudentRoutes {
   notifications: string;
   messages: string;
   settings: string;
+  userSettings: string;
   grades: string;
   help: string;
   financial: string;
@@ -44,6 +46,7 @@ export const studentRoutes: StudentRoutes = {
   notifications: '/student/notifications',
   messages: '/student/messages',
   settings: '/student/settings',
+  userSettings: '/student/user-settings',
   grades: '/student/grades',
   help: '/student/help',
   financial: '/student/financial',
@@ -110,8 +113,14 @@ export const studentNavItems: RouteItem[] = [
     icon: React.createElement(MessageSquare, { size: 20, className: "text-cyan-500" })
   },
   {
-    path: studentRoutes.settings,
-    name: 'Configurações',
+    path: studentRoutes.userSettings,
+    name: 'Configurações da Conta',
     icon: React.createElement(Settings, { size: 20, className: "text-gray-500" })
+  },
+  {
+    path: studentRoutes.settings,
+    name: 'Configurações do Sistema',
+    icon: React.createElement(Settings, { size: 20, className: "text-indigo-500" }),
+    adminOnly: true
   }
 ];
